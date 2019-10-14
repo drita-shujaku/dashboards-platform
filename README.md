@@ -1,1 +1,1 @@
-# dashboards-platform
+# Dashboards Platform
