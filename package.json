@@ -1,0 +1,34 @@
+{
+  "name": "dashboards-platform",
+  "version": "1.0.0",
+  "description": "A dashboards platform as a front end exercise.",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/drita-shujaku/dashboards-platform.git"
+  },
+  "author": "Drita Shujaku",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/drita-shujaku/dashboards-platform/issues"
+  },
+  "homepage": "https://github.com/drita-shujaku/dashboards-platform#readme",
+  "dependencies": {
+    "react": "^16.10.2",
+    "react-dom": "^16.10.2"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.6.4",
+    "@babel/preset-env": "^7.6.3",
+    "@babel/preset-react": "^7.6.3",
+    "babel-loader": "^8.0.6",
+    "css-loader": "^3.2.0",
+    "style-loader": "^1.0.0",
+    "webpack": "^4.41.1",
+    "webpack-cli": "^3.3.9",
+    "webpack-dev-server": "^3.8.2"
+  }
+}
