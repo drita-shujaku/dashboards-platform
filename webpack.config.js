@@ -16,7 +16,9 @@ module.exports = {
     //inline: true,
     compress: true,
     port: 8000,
-    hot: true
+    hot: true,
+    stats: { colors: true },
+    historyApiFallback: true
   },
   resolve: {
 /*    modules: [

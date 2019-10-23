@@ -1,10 +1,5 @@
 import React from 'react'
+import App from 'App'
 import ReactDOM from 'react-dom'
-
-const App = () => {
-  return (
-      <div>Hello, hello! Do you want to play?</div>
-  )
-}
 
 ReactDOM.render(<App/>, document.getElementById('root'))

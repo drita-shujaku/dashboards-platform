@@ -5,7 +5,7 @@
   "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack --config webpack.config.js",
+    "build": "webpack",
     "start": "webpack-dev-server"
   },
   "repository": {
@@ -20,9 +20,13 @@
   "homepage": "https://github.com/drita-shujaku/dashboards-platform#readme",
   "dependencies": {
     "@hot-loader/react-dom": "^16.10.2",
+    "@material-ui/core": "^4.5.1",
+    "@material-ui/icons": "^4.5.1",
+    "clsx": "^1.0.4",
     "react": "^16.10.2",
     "react-dom": "^16.10.2",
-    "react-hot-loader": "^4.12.15"
+    "react-hot-loader": "^4.12.15",
+    "react-router-dom": "^5.1.2"
   },
   "devDependencies": {
     "@babel/core": "^7.6.4",
