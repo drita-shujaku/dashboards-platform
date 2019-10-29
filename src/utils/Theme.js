@@ -4,12 +4,14 @@ const theme = (type = 'light') => ({
     primary: {
       light: '#eaeff1',
       main: '#293642',
-      dark: '#334353'
+      dark: '#334353',
+      //dark: '#00101b'
+      contrastText: '#ffffff'
     },
     secondary: {
-      //light: '#d8f1f9',
+      light: '#50c0e5',
       main: '#3cb9e2',
-      dark: '#34576a',
+      dark: '#38aed4',
       contrastText: '#ffffff'
     },
     text: {
@@ -57,9 +59,9 @@ const theme = (type = 'light') => ({
     }
   },
   typography: {
-    button: {
+/*    button: {
       textTransform: 'none'
-    }
+    }*/
   }
 })
 
