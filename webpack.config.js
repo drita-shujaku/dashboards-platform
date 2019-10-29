@@ -15,11 +15,12 @@ module.exports = {
     contentBase: DIST_DIR,
     //inline: true,
     compress: true,
-    port: 8000,
+    //port: 8000,
     hot: true,
     stats: { colors: true },
     historyApiFallback: true
   },
+  devtool: 'inline-source-map',
   resolve: {
 /*    modules: [
         APP_DIR
