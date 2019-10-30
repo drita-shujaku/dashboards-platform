@@ -19,12 +19,13 @@ const callApi = ({ endpoint, options: optionsFromCall = {} }, store) => {
   }
   let session = store.getState().session
   //Override headers to include Authorization
-  if (session) {
+  if (session.authenticated) {
+    const { user: { token = ''} = {}} = session
       options = {
           ...options,
           headers: {
               ...options.headers,
-              'Authorization': `${session.tokenType} ${session.accessToken}`
+              'Authorization': `Bearer ${token}`
           }
       }
   }
@@ -35,6 +36,8 @@ const callApi = ({ endpoint, options: optionsFromCall = {} }, store) => {
         }
         if (response.status === 401) {
             //store.dispatch({ type: "CLEAR_SESSION" })
+          sessionService.deleteSession()
+          sessionService.deleteUser()
           sessionService.invalidateSession()
         }
         const error = {

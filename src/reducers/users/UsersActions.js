@@ -24,13 +24,11 @@ export const logIn = (data) => {
         }
       }
     }).then(response => {
-      const { token } = response
-      sessionService.saveSession({ token })
+      sessionService.saveSession(response)
       return response
-    }, error => {
-      return error
-    }).then(() => {
-      sessionService.saveUser({username: data.username})
-    }).catch(error => console.error(error))
+    }).then(({ token }) => {
+      const { username } = data
+      sessionService.saveUser({ username, token })
+    })
   }
 }

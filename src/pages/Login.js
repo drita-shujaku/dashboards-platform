@@ -3,12 +3,13 @@ import { connect } from 'react-redux'
 import { useHistory, useLocation } from 'react-router-dom'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
-import { makeStyles } from '@material-ui/core'
+import { makeStyles, Snackbar } from '@material-ui/core'
 import Logo from 'presentations/icons/Logo'
 import LogoTextIcon from 'presentations/icons/LogoTextIcon'
 import { logIn } from 'reducers/users/UsersActions'
+import LoadingIndicator from 'utils/LoadingIndicator'
 
-const useStyles = makeStyles(({palette}) => ({
+const useStyles = makeStyles(({palette, shadows}) => ({
   root: {
     width: '100%',
     display: 'flex',
@@ -18,19 +19,21 @@ const useStyles = makeStyles(({palette}) => ({
     opacity: 0.8,
     height: '100vh',
     overflow: 'hidden',
-    //color: palette.text.default,
+    color: palette.text.default,
   },
   form: {
     backgroundColor: palette.background.paper,
+    boxShadow: shadows[4],
     display: 'flex',
     flexDirection: 'column',
     margin: 'auto',
+    alignItems: 'center',
     /*
     position: 'absolute',
     left: '50%',
     top: '50%',
     transform: 'translate(-50%, -50%)',*/
-    //maxWidth: 400,
+    maxWidth: 400,
     padding: 32,
     borderRadius: 10,
     '& > *:not(:first-child):not(:last-child)': {
@@ -57,37 +60,52 @@ const useStyles = makeStyles(({palette}) => ({
     width: '100%',
     justifyContent: 'center'
   },
-  button: {
-    width: '30%',
-    //textTransform: 'uppercase'
+  warning: {
+    color: palette.error.main,
+    display: 'flex',
+    flexWrap: 'wrap'
   }
 }))
 
 const Login = (props) => {
-  const { logIn, authenticated } = props
+  const { logIn, authenticated, invalid } = props
   const classes = useStyles()
-  let location = useLocation()
-  let history = useHistory()
-  let { from } = location.state || { from: { pathname: "/" } }
+  const location = useLocation()
+  const history = useHistory()
+  const { from } = location.state || { from: {pathname: "/" } }
 
-  const [ user, setUser ] = useState({username: '', password: ''})
+  const [user, setUser] = useState({username: '', password: ''})
+  const [error, setError] = useState({message: '', open: false})
 
-  useEffect(() => {
-    if(authenticated) {
-      history.replace(from)
-    }
-  }, [authenticated])
+  const message = {
+    invalid: 'The username and password did not match!',
+    empty: 'Please enter your credentials!'
+  }
+
+    useEffect(() => {
+      if (authenticated) {
+        history.replace(from)
+      }
+    }, [authenticated])
+
+
+  const displayError = (message) => {
+    setError({message, open: true})
+  }
 
   const handleChange = (event) => {
-    const { name, value } = event.target
+    const {name, value} = event.target
     setUser({...user, [name]: value})
+    setError({...error, open: false})
   }
 
   const validateUser = (data) => {
     if (!user.username || !user.password) {
-      alert('Please enter your credentials!')
+      displayError(message.empty)
     } else {
-      logIn(data)
+      logIn(data).then(() => {}, error => {
+        displayError(message.invalid)
+      })
     }
   }
 
@@ -105,7 +123,6 @@ const Login = (props) => {
               value={user.username}
               autoFocus={true}
               //InputProps={{disableUnderline:true}}
-              fullWidth
               onChange={handleChange}
           />
           <TextField
@@ -116,6 +133,9 @@ const Login = (props) => {
               value={user.password}
               onChange={handleChange}
           />
+          {error.open && <div className={classes.warning}>
+            {error.message}
+          </div>}
           <div className={classes.actions}>
             <Button
                 className={classes.button}
@@ -134,7 +154,8 @@ const Login = (props) => {
 
 const mapStateToProps = (state) => ({
   user: state.users.user,
-  authenticated: state.session.authenticated
+  authenticated: state.session.authenticated,
+  invalid: state.session.invalid
 })
 
 const mapDispatchToProps = ({
