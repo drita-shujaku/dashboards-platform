@@ -7,8 +7,7 @@ import { Router, Route, Switch } from 'react-router-dom'
 import { CssBaseline } from '@material-ui/core'
 import PrivateRoute from 'PrivateRoute'
 import { Provider } from 'react-redux'
-// import Login from 'pages/Login'
-// import Dashboards from 'pages/Dashboards'
+import LoadingIndicator from 'utils/LoadingIndicator'
 const Login = lazy(() => import('pages/Login'))
 const Dashboards = lazy(() => import('pages/Dashboards'))
 
@@ -20,7 +19,7 @@ const App = () => {
           <Fragment>
             <CssBaseline/>
             <Router history={history}>
-              <Suspense fallback={<div>Loading...</div>}>
+              <Suspense fallback={<LoadingIndicator />}>
                 <Switch>
                   <Route path={'/login'}>
                     <Login/>

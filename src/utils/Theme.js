@@ -4,8 +4,8 @@ const theme = (type = 'light') => ({
     primary: {
       light: '#eaeff1',
       main: '#293642',
-      dark: '#334353',
-      //dark: '#00101b'
+      //dark: '#334353',
+      dark: '#00101b',
       contrastText: '#ffffff'
     },
     secondary: {
@@ -20,7 +20,8 @@ const theme = (type = 'light') => ({
       secondary: '#94a6b8'
     },
     background: {
-      dark: '#283642'
+      dark: '#283642',
+      light: '#d9e0e6'
     },
     field: {
       light: '#d9e0e6',
