@@ -2,7 +2,7 @@ import 'whatwg-fetch'
 import { API_URL } from 'Constants'
 import { sessionService } from 'redux-react-session'
 
-const callApi = ({ endpoint, options: optionsFromCall = {} }, store) => {
+const callApi = ({endpoint, options: optionsFromCall = {}}, store) => {
   const url = API_URL + endpoint
   console.log(`callig API: ${url}`)
   let options = {
@@ -20,14 +20,14 @@ const callApi = ({ endpoint, options: optionsFromCall = {} }, store) => {
   let session = store.getState().session
   //Override headers to include Authorization
   if (session.authenticated) {
-    const { user: { token = ''} = {}} = session
-      options = {
-          ...options,
-          headers: {
-              ...options.headers,
-              'Authorization': `Bearer ${token}`
-          }
+    const { user: { token = '' } = {} } = session
+    options = {
+      ...options,
+      headers: {
+        ...options.headers,
+        'Authorization': `Bearer ${token}`
       }
+    }
   }
   return fetch(url, options)
       .then((response) => {

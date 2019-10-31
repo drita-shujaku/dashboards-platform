@@ -7,7 +7,6 @@ import { makeStyles, Snackbar } from '@material-ui/core'
 import Logo from 'presentations/icons/Logo'
 import LogoTextIcon from 'presentations/icons/LogoTextIcon'
 import { logIn } from 'reducers/users/UsersActions'
-import LoadingIndicator from 'utils/LoadingIndicator'
 
 const useStyles = makeStyles(({palette, shadows}) => ({
   root: {
@@ -68,7 +67,7 @@ const useStyles = makeStyles(({palette, shadows}) => ({
 }))
 
 const Login = (props) => {
-  const { logIn, authenticated } = props
+  const { logIn, user: { token }, authenticated } = props
   const classes = useStyles()
   const location = useLocation()
   const history = useHistory()
@@ -82,10 +81,10 @@ const Login = (props) => {
   }
 
     useEffect(() => {
-      if (authenticated) {
+      if (token) {
         history.replace(from)
       }
-    }, [authenticated])
+    }, [token])
 
 
   const displayError = (message) => {
@@ -102,7 +101,7 @@ const Login = (props) => {
     if (!user.username || !user.password) {
       displayError(message.empty)
     } else {
-      logIn(data).then(null, error => {
+      logIn(data, history, from).then(null, error => {
         displayError(error.message)
       })
     }
@@ -152,7 +151,7 @@ const Login = (props) => {
 }
 
 const mapStateToProps = (state) => ({
-  user: state.users.user,
+  user: state.session.user,
   authenticated: state.session.authenticated,
   invalid: state.session.invalid
 })
