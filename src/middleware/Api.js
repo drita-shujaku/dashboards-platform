@@ -34,15 +34,15 @@ const callApi = ({ endpoint, options: optionsFromCall = {} }, store) => {
         if (response.status >= 200 && response.status < 300) {
           return response
         }
-        if (response.status === 401) {
-            //store.dispatch({ type: "CLEAR_SESSION" })
-          sessionService.deleteSession()
-          sessionService.deleteUser()
-          sessionService.invalidateSession()
-        }
         const error = {
           status: response.status,
           message: response.statusText
+        }
+        if (response.status === 401) {
+          sessionService.deleteSession()
+          sessionService.deleteUser()
+          sessionService.invalidateSession()
+          error.message = 'The username and password did not match!'
         }
         console.log(`Error at ${url}`, error)
         throw error

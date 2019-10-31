@@ -68,7 +68,7 @@ const useStyles = makeStyles(({palette, shadows}) => ({
 }))
 
 const Login = (props) => {
-  const { logIn, authenticated, invalid } = props
+  const { logIn, authenticated } = props
   const classes = useStyles()
   const location = useLocation()
   const history = useHistory()
@@ -78,8 +78,7 @@ const Login = (props) => {
   const [error, setError] = useState({message: '', open: false})
 
   const message = {
-    invalid: 'The username and password did not match!',
-    empty: 'Please enter your credentials!'
+    empty: 'Please fill in your credentials!'
   }
 
     useEffect(() => {
@@ -104,7 +103,7 @@ const Login = (props) => {
       displayError(message.empty)
     } else {
       logIn(data).then(() => {}, error => {
-        displayError(message.invalid)
+        displayError(error.message === 'Failed to fetch' ? 'We failed to contact the server :(' : error.message)
       })
     }
   }
