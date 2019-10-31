@@ -7,10 +7,10 @@ export const authenticateUser = (data) => ({
   data
 })
 
-/*export const receiveUser = (item) => ({
+export const receiveUser = (item) => ({
   type: ACTION_TYPES.RECEIVE_USER,
   item
-})*/
+})
 
 export const logIn = (data) => {
   return (dispatch) => {
@@ -29,6 +29,7 @@ export const logIn = (data) => {
     }).then(({ token }) => {
       const { username } = data
       sessionService.saveUser({ username, token })
+      dispatch(receiveUser(data))
     })
   }
 }
