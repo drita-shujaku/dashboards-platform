@@ -46,6 +46,10 @@ const callApi = ({ endpoint, options: optionsFromCall = {} }, store) => {
         }
         console.log(`Error at ${url}`, error)
         throw error
+      }, error => {
+        //Todo remove modified error messages after backend changes them
+        error.message = 'We failed to contact the server :('
+        throw error
       }).then(response => {
         return response.json()
       }).then(json => {

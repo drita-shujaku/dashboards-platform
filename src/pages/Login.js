@@ -102,8 +102,8 @@ const Login = (props) => {
     if (!user.username || !user.password) {
       displayError(message.empty)
     } else {
-      logIn(data).then(() => {}, error => {
-        displayError(error.message === 'Failed to fetch' ? 'We failed to contact the server :(' : error.message)
+      logIn(data).then(null, error => {
+        displayError(error.message)
       })
     }
   }
