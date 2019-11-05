@@ -24,12 +24,13 @@ export const logIn = (data) => {
         }
       }
     }).then(response => {
-      sessionService.saveSession(response)
-      return response
-    }).then(({ token }) => {
+      const { token } = response
       const { username } = data
-      sessionService.saveUser({ username, token })
+      sessionService.saveSession({ token }).then(() => {
+        sessionService.saveUser({ username, token })
+      })
       dispatch(receiveUser(data))
+      return response
     })
   }
 }

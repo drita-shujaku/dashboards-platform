@@ -65,10 +65,23 @@ export const filteredItems = (state) => {
   })
 }
 
+
 const dashboardsReducer = (state = {}, action) => ({
   items: dashboards(state.items, action),
   request: request(state.request, action),
   search: search(state.search, action)
 })
 
+const appendChildren = (dashboards, current = undefined) => {
+  const callback = (item) => !!current ? current.id === item.parentId : !item.parentId
+  return dashboards.filter(callback).map(item => ({
+    ...item,
+    children: appendChildren(dashboards, item)
+  }))
+}
+
+export const dashboardsHierarchy = (state) => {
+  const { dashboards: { items = [] } } = state
+  return appendChildren(items)
+}
 export default dashboardsReducer

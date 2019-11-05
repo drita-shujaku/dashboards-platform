@@ -3,13 +3,14 @@ import { Route, Redirect } from 'react-router-dom'
 import { connect } from 'react-redux'
 
 const PrivateRoute = ({children, ...props}) => {
-  const { authenticated } = props
+  const { authenticated, token } = props
+
   return (
       <Route
           {...props}
           render={({location}) =>
              authenticated ? (
-                children
+                token && children
             ) : (
                 <Redirect
                   to={{
@@ -27,7 +28,8 @@ const PrivateRoute = ({children, ...props}) => {
 
 
 const matchStateToProps = (state) => ({
-  authenticated: state.session.authenticated
+  authenticated: state.session.authenticated,
+  token: state.session.user
 })
 
 export default connect(matchStateToProps)(PrivateRoute)

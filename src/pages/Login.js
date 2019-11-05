@@ -8,7 +8,7 @@ import Logo from 'presentations/icons/Logo'
 import LogoTextIcon from 'presentations/icons/LogoTextIcon'
 import { logIn } from 'reducers/users/UsersActions'
 
-const useStyles = makeStyles(({palette, shadows}) => ({
+const useStyles = makeStyles(({palette, spacing, size, shadows}) => ({
   root: {
     width: '100%',
     display: 'flex',
@@ -33,10 +33,10 @@ const useStyles = makeStyles(({palette, shadows}) => ({
     top: '50%',
     transform: 'translate(-50%, -50%)',*/
     maxWidth: 400,
-    padding: 32,
+    padding: spacing(4),
     borderRadius: 10,
     '& > *:not(:first-child):not(:last-child)': {
-      marginBottom: 16,
+      marginBottom: spacing(2),
       minWidth: 350,
     }
   },
@@ -44,15 +44,15 @@ const useStyles = makeStyles(({palette, shadows}) => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    marginBottom: 24
+    marginBottom: spacing(3)
   },
   icon: {
-    width: 42,
-    height: 42
+    width: spacing(6),
+    height: spacing(6)
   },
   logoText: {
     width: 70,
-    height: 32
+    height: spacing(4)
   },
   actions: {
     display: 'flex',
@@ -101,7 +101,7 @@ const Login = (props) => {
     if (!user.username || !user.password) {
       displayError(message.empty)
     } else {
-      logIn(data, history, from).then(null, error => {
+      logIn(data).then(null, error => {
         displayError(error.message)
       })
     }
