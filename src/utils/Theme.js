@@ -28,7 +28,19 @@ const theme = (type = 'light') => ({
       dark: '#293642'
     },
     label: '#94A6B8'
-
+  },
+  size: {
+    displayFont: 48,
+    avatar: 48,
+    headingFont: 28,
+    icon: 24,
+    headerFont: 18,
+    titleFont: 16,
+    defaultFont: 14,
+    captionFont: 12,
+    smallFont: 10,
+    radius: 4,
+    drawer: 300
   },
   overrides: {
     MuiInputBase: {
@@ -60,10 +72,10 @@ const theme = (type = 'light') => ({
     }
   },
   typography: {
+  }
 /*    button: {
       textTransform: 'none'
     }*/
-  }
 })
 
 
