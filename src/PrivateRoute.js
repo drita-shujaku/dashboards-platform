@@ -8,15 +8,15 @@ const PrivateRoute = ({children, ...props}) => {
   return (
       <Route
           {...props}
-          render={({location}) =>
+          render={props =>
              authenticated ? (
-                token && children
+                token && React.cloneElement(children, props)
             ) : (
                 <Redirect
                   to={{
                     pathname: '/login',
                     state: {
-                      from: location
+                      from: props.location
                     }
                   }}
                 />

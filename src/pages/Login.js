@@ -3,10 +3,11 @@ import { connect } from 'react-redux'
 import { useHistory, useLocation } from 'react-router-dom'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
-import { makeStyles, Snackbar } from '@material-ui/core'
+import { makeStyles } from '@material-ui/core'
 import Logo from 'presentations/icons/Logo'
 import LogoTextIcon from 'presentations/icons/LogoTextIcon'
 import { logIn } from 'reducers/users/UsersActions'
+import Form, { FormActions } from 'presentations/Form'
 
 const useStyles = makeStyles(({palette, spacing, size, shadows}) => ({
   root: {
@@ -14,31 +15,11 @@ const useStyles = makeStyles(({palette, spacing, size, shadows}) => ({
     display: 'flex',
     alignItems: 'center',
     flexFlow: 'row wrap',
-    backgroundColor: palette.background.dark,
+    backgroundColor: palette.background.default,
     opacity: 0.8,
     height: '100vh',
     overflow: 'hidden',
     color: palette.text.default,
-  },
-  form: {
-    backgroundColor: palette.background.paper,
-    boxShadow: shadows[4],
-    display: 'flex',
-    flexDirection: 'column',
-    margin: 'auto',
-    alignItems: 'center',
-    /*
-    position: 'absolute',
-    left: '50%',
-    top: '50%',
-    transform: 'translate(-50%, -50%)',*/
-    maxWidth: 400,
-    padding: spacing(4),
-    borderRadius: 10,
-    '& > *:not(:first-child):not(:last-child)': {
-      marginBottom: spacing(2),
-      minWidth: 350,
-    }
   },
   logo: {
     display: 'flex',
@@ -52,17 +33,16 @@ const useStyles = makeStyles(({palette, spacing, size, shadows}) => ({
   },
   logoText: {
     width: 70,
-    height: spacing(4)
-  },
-  actions: {
-    display: 'flex',
-    width: '100%',
-    justifyContent: 'center'
+    height: spacing(4),
+    color: palette.text.primary
   },
   warning: {
     color: palette.error.main,
     display: 'flex',
     flexWrap: 'wrap'
+  },
+  button: {
+    textTransform: 'uppercase'
   }
 }))
 
@@ -109,7 +89,7 @@ const Login = (props) => {
 
   return (
       <div className={classes.root}>
-        <div className={classes.form}>
+        <Form>
           <div className={classes.logo}>
             <Logo className={classes.icon}/>
             <LogoTextIcon className={classes.logoText}/>
@@ -134,18 +114,18 @@ const Login = (props) => {
           {error.open && <div className={classes.warning}>
             {error.message}
           </div>}
-          <div className={classes.actions}>
+          <FormActions className={classes.actions}>
             <Button
                 className={classes.button}
-                color={'secondary'}
+                /*color={'secondary'}*/
                 /*variant={'contained'}*/
                 size={'large'}
                 onClick={() => validateUser(user)}
             >
               Log in
             </Button>
-          </div>
-        </div>
+          </FormActions>
+        </Form>
       </div>
   )
 }

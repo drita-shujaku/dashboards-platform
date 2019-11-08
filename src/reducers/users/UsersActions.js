@@ -24,13 +24,20 @@ export const logIn = (data) => {
         }
       }
     }).then(response => {
-      const { token } = response
-      const { username } = data
-      sessionService.saveSession({ token }).then(() => {
-        sessionService.saveUser({ username, token })
+      const {token} = response
+      const {username} = data
+      sessionService.saveSession({token}).then(() => {
+        sessionService.saveUser({username, token})
       })
       dispatch(receiveUser(data))
       return response
     })
   }
+}
+
+export const logOut = () => {
+  return sessionService.deleteUser().then(() => sessionService.deleteSession()).catch(error => {
+      console.error(error)
+      throw error
+    })
 }

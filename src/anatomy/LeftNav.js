@@ -1,14 +1,17 @@
 import React, { useState } from 'react'
-import { makeStyles, Typography } from '@material-ui/core'
+import { makeStyles, Typography, Fab } from '@material-ui/core'
 import { connect } from 'react-redux'
 import { switchTheme } from 'reducers/Theme'
-import { VisibilityOutlinedIcon, KeyboardArrowLeftOutlinedIcon } from '@material-ui/icons'
+import { VisibilityOutlined, KeyboardArrowLeftOutlined } from '@material-ui/icons'
 import clsx from 'clsx'
 import { dashboardsHierarchy } from 'reducers/dashboards/Dashboards'
+import LoadingIndicator from 'utils/LoadingIndicator'
+import { NavLink } from 'react-router-dom'
 
-const useStyles = makeStyles(({size, spacing, palette}) => ({
+const useStyles = makeStyles(({size, spacing, palette, shadows}) => ({
   root: {
     display: 'flex',
+    justifyContent: 'space-between',
     flexFlow: 'column',
     overflowX: 'hidden',
     height: '100vh',
@@ -19,36 +22,86 @@ const useStyles = makeStyles(({size, spacing, palette}) => ({
     padding: spacing(5),
     //paddingLeft: spacing(5),
     backgroundColor: palette.primary.main,
-    color: palette.common.white
+    color: palette.common.white,
+    boxShadow: shadows[10]
   },
   open: {
     width: size.drawer
   },
-  title: {},
+  title: {
+    marginBottom: spacing(3)
+  },
   directory: {
-    color: palette.text.secondary
+    color: palette.text.secondary,
+    textOverflow: 'ellipsis'
+  },
+  menuLink: {
+    color: palette.text.secondary,
+    textDecoration: 'none',
+    '&:hover': {
+      color: palette.secondary.main
+    }
+  },
+  activeMenuLink: {
+    color: palette.secondary.main
   },
   list: {
-    paddingLeft: spacing(2)
+    paddingLeft: spacing(),
+    '& > *': {
+      padding: spacing(1/2)
+    },
+    '& > :last-child': {
+      paddingBottom: 0
+    }
   },
   childrenList: {
-    listStyleType: 'none',
-    padding:
-        spacing()
+    listStyleType: 'none'
   },
   switchTheme: {
+    display: 'flex',
+    flexFlow: 'row nowrap',
     alignSelf: 'center',
-    marginTop: 'auto'
+    alignItems: 'center',
+  },
+  switcher: {
+    position: 'relative',
+    height: spacing(4) + spacing(),
+    width: spacing(8),
+    borderRadius: 100,
+    padding: spacing(1/2),
+    marginLeft: spacing(),
+    cursor: 'pointer',
+    backgroundColor: palette.switcher
+  },
+  light: {
+      left: spacing(1/2),
+  },
+  dark: {
+      left: `calc(100% - ${spacing(4) + spacing(1/2)}px)`
+  },
+  fabRoot: {
+    position: 'absolute',
+    minHeight: size.icon,
+    width: spacing(4),
+    transition: 'all 300ms',
+    height: spacing(4),
+  },
+  icon: {
+    height: 18,
+    width: 18
   }
-
 }))
 
 const LeftNav = (props) => {
 
-  const { type, switchTheme, dashboards } = props
+  const { type, switchTheme, dashboards, dashboardsLoading } = props
   const classes = useStyles()
 
   const [open, setOpen] = useState(true)
+
+  const displayCharacters = (string, number) => {
+    return string.length > number ? string.substr(0, number) + '...' : string
+  }
 
 
   const capitalize = (text) => {
@@ -67,7 +120,13 @@ const LeftNav = (props) => {
         {dashboards.map(dashboard => {
           return (
               <li key={dashboard.id}>
-                {dashboard.name}
+                <NavLink
+                    to={`dashboards/${dashboard.id}`}
+                    className={classes.menuLink}
+                    activeClassName={classes.activeMenuLink}
+                >
+                  {displayCharacters(dashboard.name, 30)}
+                </NavLink>
                 {renderList(dashboard.children, level + 1)}
               </li>)
         })}
@@ -83,11 +142,19 @@ const LeftNav = (props) => {
             Overview
           </Typography>
           <div className={classes.directory}>
-            {renderList(dashboards, 0)}
+            {dashboardsLoading ? <LoadingIndicator/> : renderList(dashboards, 0)}
           </div>
         </div>
         <div className={classes.switchTheme}>
-          <span>{theme} mode</span>
+          <span>Dark mode</span>
+          <div
+              className={clsx(classes.switcher)}
+              onClick={() => switchTheme(type === 'dark' ? 'light' : 'dark')}
+          >
+            <Fab classes={{root: classes.fabRoot}} className={classes[type]}>
+              <VisibilityOutlined className={classes.icon}/>
+            </Fab>
+          </div>
         </div>
       </div>
   )
@@ -95,7 +162,8 @@ const LeftNav = (props) => {
 
 const mapStateToProps = (state) => ({
   type: state.theme,
-  dashboards: dashboardsHierarchy(state)
+  dashboards: dashboardsHierarchy(state),
+  dashboardsLoading: state.dashboards.request.isLoading
 })
 
 const matchDispatchToProps = {

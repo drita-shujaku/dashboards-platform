@@ -21,6 +21,8 @@ const middleware = [api, thunk, logger]
 
 const store = createStore(reducers, applyMiddleware(...middleware))
 
+const options = { refreshOnCheckAuth: true, redirectPath: '/login' }
+
 sessionService.initSessionService(store)
 export default store
 

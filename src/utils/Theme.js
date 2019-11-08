@@ -1,17 +1,19 @@
-const theme = (type = 'light') => ({
-  type,
-  palette: {
+const palette = {
+  light: {
     primary: {
-      light: '#eaeff1',
+      //light: '#eaeff1',
+      light: '#283642',
       main: '#293642',
-      //dark: '#334353',
-      dark: '#00101b',
-      contrastText: '#ffffff'
+      dark: '#334353',
+      //dark: '#00101b',
+      //dark: '#2B7285',
+      contrastText: '#fffff'
     },
     secondary: {
       light: '#50c0e5',
       main: '#3cb9e2',
-      dark: '#38aed4',
+      //dark: '#38aed4',
+      dark: '#0093BB',
       contrastText: '#ffffff'
     },
     text: {
@@ -20,14 +22,60 @@ const theme = (type = 'light') => ({
       secondary: '#94a6b8'
     },
     background: {
-      dark: '#283642',
-      light: '#d9e0e6'
+      light: '#ffffff',
+      main: '#eaeff1',
+      default: '#283642cc',
+      dark: '#94A6B8'
     },
     field: {
       light: '#d9e0e6',
       dark: '#293642'
     },
-    label: '#94A6B8'
+    label: '#94A6B8',
+    switcher: '#a3b3c2'
+  },
+  dark: {
+    primary: {
+      //light: '#eaeff1',
+      light: '#283642',
+      main: '#293642',
+      dark: '#73818F',
+      //dark: '#34576A',
+      //dark: '#10161a',
+      contrastText: '#94a6b8'
+    },
+    secondary: {
+      light: '#50c0e5',
+      main: '#3cb9e2',
+      //dark: '#38aed4',
+      dark: '#0093BB',
+      contrastText: '#ffffff'
+    },
+    text: {
+      default: '#94a6b8',
+      primary: '#314151',
+      //primary: '#293642',
+      //primary: '#314151',
+      secondary: '#94A6B8'
+    },
+    background: {
+      light: '#8ca0b3',
+      main: '#334353',
+      default: '#334353'
+    },
+    field: {
+      light: '#d9e0e6',
+      dark: '#293642'
+    },
+    label: '#94A6B8',
+    switcher: '#3cb9e2'
+  }
+}
+
+const theme = (type = 'light') => ({
+  type,
+  palette: {
+    ...palette[type]
   },
   size: {
     displayFont: 48,
@@ -45,8 +93,8 @@ const theme = (type = 'light') => ({
   overrides: {
     MuiInputBase: {
       input: {
-        color: '#293642',
-        backgroundColor: '#d9e0e6',
+        color: type === 'light' ? '#293642' : '#94a6b8',
+        backgroundColor: type === 'light' ? '#d9e0e6' : '#293642',
         borderRadius: 4
       },
       root: {
@@ -59,7 +107,11 @@ const theme = (type = 'light') => ({
     },
     MuiFilledInput: {
       root: {
-        borderRadius: 4
+        backgroundColor: type === 'light' ? '#d9e0e6' : '#293642',
+        borderRadius: 4,
+        '&:hover:not($disabled), &$focused': {
+          backgroundColor: type === 'light' ? '#d9e0e6' : '#293642',
+        },
       },
       underline: {
         '&:before, &:after': {
@@ -69,13 +121,13 @@ const theme = (type = 'light') => ({
           borderBottom: 'none',
         }
       }
-    }
+    },
   },
   typography: {
-  }
-/*    button: {
+    button: {
       textTransform: 'none'
-    }*/
+    }
+  },
 })
 
 
@@ -86,3 +138,34 @@ const Theme = {
 }
 
 export default Theme
+
+/* primary: {
+      light: '#00101b',
+      main: '#293642',
+      //dark: '#334353',
+      dark: '#00101b',
+      contrastText: '#ffffff'
+    },
+    secondary: {
+      light: '#50c0e5',
+      main: '#3cb9e2',
+      //dark: '#38aed4',
+      dark: '#0093BB',
+      contrastText: '#ffffff'
+    },
+    text: {
+      default: '#293642',
+      primary: '#314151',
+      secondary: '#94a6b8'
+    },
+    background: {
+      dark: '#283642',
+      main: '#eaeff1',
+      light: '#d9e0e6'
+    },
+    field: {
+      light: '#d9e0e6',
+      dark: '#293642'
+    },
+    label: '#94A6B8'
+  }*/

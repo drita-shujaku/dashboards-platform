@@ -28,6 +28,20 @@ const callApi = ({endpoint, options: optionsFromCall = {}}, store) => {
         'Authorization': `Bearer ${token}`
       }
     }
+    /*
+    //const { user: { token = '' } = {} } = session
+    sessionService.loadSession().then(({token}) => {
+      options = {
+        ...options,
+        headers: {
+          ...options.headers,
+          'Authorization': `Bearer ${token}`
+        }
+      }
+
+      console.log('token', token)
+    }
+    */
   }
   return fetch(url, options)
       .then((response) => {
