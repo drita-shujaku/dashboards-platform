@@ -1,6 +1,6 @@
 const path = require('path')
-const DIST_DIR = path.resolve('dist')
-const APP_DIR = path.resolve('src')
+const DIST_DIR = path.resolve(__dirname, 'dist')
+const APP_DIR = path.resolve(__dirname, 'src')
 const BUILD_ENV = process.env.NODE_ENV || 'development'
 
 module.exports = {
@@ -9,7 +9,8 @@ module.exports = {
   entry: './index.js',
   output: {
     filename: 'bundle.js',
-    path: DIST_DIR
+    path: DIST_DIR,
+    publicPath: '/'
   },
   devServer: {
     contentBase: DIST_DIR,
@@ -20,7 +21,7 @@ module.exports = {
     stats: { colors: true },
     historyApiFallback: true
   },
-  devtool: 'inline-source-map',
+  // devtool: 'inline-source-map',
   resolve: {
 /*    modules: [
         APP_DIR
@@ -35,6 +36,7 @@ module.exports = {
       {
         test: /\.js$/,
         exclude: /node_modules/,
+        include: APP_DIR,
         use: {
           loader: 'babel-loader'
         }
