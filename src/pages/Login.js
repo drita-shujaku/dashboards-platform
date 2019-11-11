@@ -9,7 +9,7 @@ import LogoTextIcon from 'presentations/icons/LogoTextIcon'
 import { logIn } from 'reducers/users/UsersActions'
 import Form, { FormActions } from 'presentations/Form'
 
-const useStyles = makeStyles(({palette, spacing, size, shadows}) => ({
+const useStyles = makeStyles(({ palette, spacing, size, shadows }) => ({
   root: {
     width: '100%',
     display: 'flex',
@@ -51,30 +51,30 @@ const Login = (props) => {
   const classes = useStyles()
   const location = useLocation()
   const history = useHistory()
-  const { from } = location.state || { from: {pathname: "/" } }
+  const { from } = location.state || { from: { pathname: "/" } }
 
-  const [user, setUser] = useState({username: '', password: ''})
-  const [error, setError] = useState({message: '', open: false})
+  const [ user, setUser ] = useState({ username: '', password: '' })
+  const [ error, setError ] = useState({ message: '', open: false })
 
   const message = {
     empty: 'Please fill in your credentials!'
   }
 
-    useEffect(() => {
-      if (token) {
-        history.replace(from)
-      }
-    }, [token])
+  useEffect(() => {
+    if (token) {
+      history.replace(from)
+    }
+  }, [ token ])
 
 
   const displayError = (message) => {
-    setError({message, open: true})
+    setError({ message, open: true })
   }
 
   const handleChange = (event) => {
-    const {name, value} = event.target
-    setUser({...user, [name]: value})
-    setError({...error, open: false})
+    const { name, value } = event.target
+    setUser({ ...user, [name]: value })
+    setError({ ...error, open: false })
   }
 
   const validateUser = (data) => {
