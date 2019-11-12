@@ -10,7 +10,6 @@ import { Provider } from 'react-redux'
 import LoadingIndicator from 'utils/LoadingIndicator'
 const Login = lazy(() => import('pages/Login'))
 const Dashboards = lazy(() => import('pages/Dashboards'))
-const Page = lazy(() => import('pages/Page'))
 const CreateProject = lazy(() => import('pages/CreatePoject'))
 //import Page from 'pages/Page'
 
@@ -30,9 +29,6 @@ const App = () => {
                   <Route path={'/create'}>
                     <CreateProject/>
                   </Route>
-                  <PrivateRoute path={'/dashboards/:id'}>
-                    <Page/>
-                  </PrivateRoute>
                   <PrivateRoute path={'/'}>
                     <Dashboards/>
                   </PrivateRoute>

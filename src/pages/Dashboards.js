@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
-import { useHistory } from 'react-router-dom'
+import { useHistory, Switch } from 'react-router-dom'
 import { addDashboard, fetchDashboards } from 'reducers/dashboards/DashboardActions'
 import LeftNav from 'anatomy/LeftNav'
 import { makeStyles } from '@material-ui/core'
@@ -11,15 +11,23 @@ import { Add } from '@material-ui/icons'
 import { filteredItems } from 'reducers/dashboards/Dashboards'
 import TextField from '@material-ui/core/TextField'
 import IconButton from '@material-ui/core/IconButton'
+import PrivateRoute from 'PrivateRoute'
+import Header from 'anatomy/Header'
 
 
-const useStyles = makeStyles(({palette, spacing, size}) => ({
+const useStyles = makeStyles(({ palette, spacing, size }) => ({
   root: {
     display: 'flex',
     backgroundColor: palette.background.main
   },
   content: {
-    padding: spacing(3)
+    padding: spacing(5)
+  },
+  header: {
+    paddingBottom: spacing(2)
+  },
+  search: {
+    marginBottom: spacing(2)
   },
   logOut: {
     marginLeft: 'auto',
@@ -40,11 +48,12 @@ const useStyles = makeStyles(({palette, spacing, size}) => ({
 }))
 
 const Dashboards = (props) => {
-  const {user, fetchDashboards, dashboards} = props
+  const { user, fetchDashboards, dashboards } = props
   const classes = useStyles()
-  console.log('props', props)
 
-  const [search, setSearch] = useState('')
+  console.log('dashboards props', props)
+
+  const [ search, setSearch ] = useState('')
 
   const history = useHistory()
 
@@ -53,7 +62,7 @@ const Dashboards = (props) => {
   }, [])
 
   const handleChange = (event) => {
-    const {value} = event.target
+    const { value } = event.target
     setSearch(value)
   }
 
@@ -61,7 +70,13 @@ const Dashboards = (props) => {
       <div className={classes.root}>
         <LeftNav/>
         <div className={classes.content}>
-          Welcome home {user.username}!
+          <div className={classes.header}>
+            <Switch>
+              <PrivateRoute path={'/dashboards/:id'}>
+                <Header/>
+              </PrivateRoute>
+            </Switch>
+          </div>
           <div className={classes.search}>
             <TextField
                 name={'search'}
@@ -78,9 +93,9 @@ const Dashboards = (props) => {
                         </IconButton>
                       </InputAdornment>)
                 }}
-                fullWidth
             />
           </div>
+          <div>Welcome home {user.username}!</div>
         </div>
         <div className={classes.logOut}>
           <Button

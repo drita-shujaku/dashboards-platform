@@ -1,13 +1,15 @@
+/**
+ * Created by Drita Shujaku on 12/11/2019
+ */
+
 import React from 'react'
 import { makeStyles } from '@material-ui/core'
 
 const useStyles = makeStyles(({}) => ({
-  root: {
-
-  }
+  root: {}
 }))
 
-const Page = (props) => {
+const Factory = (props) => {
 
   const classes = useStyles()
 
@@ -16,4 +18,4 @@ const Page = (props) => {
   )
 }
 
-export default Page
+export default Factory

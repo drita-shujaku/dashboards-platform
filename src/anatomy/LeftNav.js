@@ -121,7 +121,7 @@ const LeftNav = (props) => {
           return (
               <li key={dashboard.id}>
                 <NavLink
-                    to={`dashboards/${dashboard.id}`}
+                    to={`/dashboards/${dashboard.id}`}
                     className={classes.menuLink}
                     activeClassName={classes.activeMenuLink}
                 >
