@@ -1,22 +1,25 @@
 import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import { makeStyles, Typography } from '@material-ui/core'
-import { useHistory, useLocation } from 'react-router-dom'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
-import { addDashboard } from 'reducers/dashboards/DashboardActions'
-import Form, { FormActions } from 'presentations/Form'
+import { addDashboard, fetchDashboards } from 'reducers/dashboards/DashboardActions'
+import Form, { FormActions, FormBody } from 'presentations/Form'
+import PropTypes from 'prop-types'
 
-const useStyles = makeStyles(({palette, size, spacing, typography}) => ({
+const useStyles = makeStyles(({ palette, size, spacing, typography }) => ({
   root: {
-    width: '100%',
     display: 'flex',
     alignItems: 'center',
     flexFlow: 'row wrap',
     backgroundColor: palette.background.default,
-    opacity: 0.8,
-    height: '100vh',
-    overflow: 'hidden',
+    //opacity: 0.8,
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    height: '100%',
+    width: '100%',
+    zIndex: 2
     //color: palette.text.default,
   },
   title: {
@@ -31,61 +34,68 @@ const useStyles = makeStyles(({palette, size, spacing, typography}) => ({
     '& > *:not(:last-child)': {
       marginRight: spacing(2)
     }
-  }
+  },
 }))
 
 const CreateProject = (props) => {
 
-  const { addDashboard } = props
+  const { addDashboard, onClose, parent, fetchDashboards } = props
   const classes = useStyles()
-  const history = useHistory()
-  const location = useLocation()
-  const { from } = location.state || { from: {pathname: "/" } }
-  const [ project, setProject ] = useState({ name: '', description: '' })
+
+  const [ project, setProject ] = useState({ name: '', description: '', warning: '' })
 
   const handleChange = (event) => {
-    const {name, value} = event.target
-    setProject({...project, [name]: value})
+    const { name, value } = event.target
+    setProject({ ...project, [name]: value, warning: '' })
   }
 
-  const saveProject = () => {
-    addDashboard(project)
-    history.push(from)
+  const saveProject = (event) => {
+    event.preventDefault()
+    const { name, description } = project
+    if (!(project.name && project.description)) {
+      setProject({ ...project, warning: 'Please fill out all the fields!' })
+    } else {
+      addDashboard({ name, description, ...(!!parent && { parentId: parent.id }) })
+      //fetchDashboards()
+      onClose()
+    }
   }
 
   return (
       <div className={classes.root}>
-        <Form width={500}>
+        <Form width={500} onSubmit={saveProject}>
           <div className={classes.header}>
             <Typography variant={'h5'} className={classes.title}>
               Create new project
             </Typography>
           </div>
-          <TextField
-              name={'name'}
-              label={'Name'}
-              variant={'filled'}
-              value={project.name}
-              autoFocus={true}
-              onChange={handleChange}
-              fullWidth
-          />
-          <TextField
-              name={'description'}
-              label={'Description'}
-              variant={'filled'}
-              type={'description'}
-              value={project.description}
-              onChange={handleChange}
-              multiline
-              fullWidth
-              rows={'7'}
-          />
-          <FormActions justifyContent={'flex-end'} classes={{actions: classes.actions}}>
+          <FormBody message={project.warning}>
+            <TextField
+                name={'name'}
+                label={'Name'}
+                variant={'filled'}
+                value={project.name}
+                autoFocus={true}
+                onChange={handleChange}
+                fullWidth
+            />
+            <TextField
+                name={'description'}
+                label={'Description'}
+                variant={'filled'}
+                type={'description'}
+                value={project.description}
+                onChange={handleChange}
+                multiline
+                fullWidth
+                rows={'7'}
+            />
+          </FormBody>
+          <FormActions justifyContent={'flex-end'} classes={{ actions: classes.actions }}>
             <Button
                 className={classes.button}
                 size={'large'}
-                onClick={() => { history.push('/dashboards') }}
+                onClick={onClose}
             >
               Cancel
             </Button>
@@ -94,7 +104,7 @@ const CreateProject = (props) => {
                 color={'secondary'}
                 variant={'contained'}
                 size={'large'}
-                onClick={saveProject}
+                type={'submit'}
             >
               Save
             </Button>
@@ -105,7 +115,13 @@ const CreateProject = (props) => {
 }
 
 const mapDispatchToProps = ({
-  addDashboard
+  addDashboard,
+  fetchDashboards
 })
+
+CreateProject.propTypes = {
+  parent: PropTypes.object,
+  onClose: PropTypes.func
+}
 
 export default connect(null, mapDispatchToProps)(CreateProject)

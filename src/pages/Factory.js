@@ -4,6 +4,7 @@
 
 import React from 'react'
 import { makeStyles } from '@material-ui/core'
+import Dashboards from 'pages/Dashboards'
 
 const useStyles = makeStyles(({}) => ({
   root: {}
@@ -14,7 +15,11 @@ const Factory = (props) => {
   const classes = useStyles()
 
   return (
-      <div className={classes.root}></div>
+      <div className={classes.root}>
+        <Dashboards>
+
+        </Dashboards>
+      </div>
   )
 }
 

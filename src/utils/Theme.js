@@ -24,14 +24,11 @@ const palette = {
     background: {
       light: '#ffffff',
       main: '#eaeff1',
-      default: '#283642cc',
+      //default: '#283642cc',
+      default: '#283642',
       dark: '#94A6B8'
     },
-    field: {
-      light: '#d9e0e6',
-      dark: '#293642'
-    },
-    label: '#94A6B8',
+    field: '#d9e0e6',
     switcher: '#a3b3c2'
   },
   dark: {
@@ -63,11 +60,7 @@ const palette = {
       main: '#334353',
       default: '#334353'
     },
-    field: {
-      light: '#d9e0e6',
-      dark: '#293642'
-    },
-    label: '#94A6B8',
+    field: '#293642',
     switcher: '#3cb9e2'
   }
 }
@@ -93,8 +86,8 @@ const theme = (type = 'light') => ({
   overrides: {
     MuiInputBase: {
       input: {
-        color: type === 'light' ? '#293642' : '#94a6b8',
-        backgroundColor: type === 'light' ? '#d9e0e6' : '#293642',
+        color: palette[type].text.default,
+        backgroundColor: palette[type].field,
         borderRadius: 4
       },
       root: {
@@ -107,10 +100,10 @@ const theme = (type = 'light') => ({
     },
     MuiFilledInput: {
       root: {
-        backgroundColor: type === 'light' ? '#d9e0e6' : '#293642',
+        backgroundColor: palette[type].field,
         borderRadius: 4,
         '&:hover:not($disabled), &$focused': {
-          backgroundColor: type === 'light' ? '#d9e0e6' : '#293642',
+          backgroundColor: palette[type].field,
         },
       },
       underline: {

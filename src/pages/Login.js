@@ -7,7 +7,7 @@ import { makeStyles } from '@material-ui/core'
 import Logo from 'presentations/icons/Logo'
 import LogoTextIcon from 'presentations/icons/LogoTextIcon'
 import { logIn } from 'reducers/users/UsersActions'
-import Form, { FormActions } from 'presentations/Form'
+import Form, { FormActions, FormBody } from 'presentations/Form'
 
 const useStyles = makeStyles(({ palette, spacing, size, shadows }) => ({
   root: {
@@ -21,7 +21,7 @@ const useStyles = makeStyles(({ palette, spacing, size, shadows }) => ({
     overflow: 'hidden',
     color: palette.text.default,
   },
-  logo: {
+  header: {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
@@ -36,11 +36,6 @@ const useStyles = makeStyles(({ palette, spacing, size, shadows }) => ({
     height: spacing(4),
     color: palette.text.primary
   },
-  warning: {
-    color: palette.error.main,
-    display: 'flex',
-    flexWrap: 'wrap'
-  },
   button: {
     textTransform: 'uppercase'
   }
@@ -53,8 +48,7 @@ const Login = (props) => {
   const history = useHistory()
   const { from } = location.state || { from: { pathname: "/" } }
 
-  const [ user, setUser ] = useState({ username: '', password: '' })
-  const [ error, setError ] = useState({ message: '', open: false })
+  const [ user, setUser ] = useState({ username: '', password: '', message: '' })
 
   const message = {
     empty: 'Please fill in your credentials!'
@@ -68,20 +62,20 @@ const Login = (props) => {
 
 
   const displayError = (message) => {
-    setError({ message, open: true })
+    setUser({ ...user, message })
   }
 
   const handleChange = (event) => {
     const { name, value } = event.target
-    setUser({ ...user, [name]: value })
-    setError({ ...error, open: false })
+    setUser({ ...user, [name]: value, ...(user.message && { message: '' }) })
   }
 
-  const validateUser = (data) => {
+  const validateUser = (event) => {
+    event.preventDefault()
     if (!user.username || !user.password) {
       displayError(message.empty)
     } else {
-      logIn(data).then(null, error => {
+      logIn(user).then(null, error => {
         displayError(error.message)
       })
     }
@@ -89,38 +83,38 @@ const Login = (props) => {
 
   return (
       <div className={classes.root}>
-        <Form>
-          <div className={classes.logo}>
+        <Form onSubmit={validateUser}>
+          <div className={classes.header}>
             <Logo className={classes.icon}/>
             <LogoTextIcon className={classes.logoText}/>
           </div>
-          <TextField
-              name={'username'}
-              label={'Username'}
-              variant={'filled'}
-              value={user.username}
-              autoFocus={true}
-              //InputProps={{disableUnderline:true}}
-              onChange={handleChange}
-          />
-          <TextField
-              name={'password'}
-              label={'Password'}
-              variant={'filled'}
-              type={'password'}
-              value={user.password}
-              onChange={handleChange}
-          />
-          {error.open && <div className={classes.warning}>
-            {error.message}
-          </div>}
+          <FormBody message={user.message}>
+            <TextField
+                name={'username'}
+                label={'Username'}
+                variant={'filled'}
+                value={user.username}
+                autoFocus={true}
+                //InputProps={{disableUnderline:true}}
+                onChange={handleChange}
+            />
+            <TextField
+                name={'password'}
+                label={'Password'}
+                variant={'filled'}
+                type={'password'}
+                value={user.password}
+                onChange={handleChange}
+            />
+          </FormBody>
           <FormActions className={classes.actions}>
             <Button
                 className={classes.button}
                 /*color={'secondary'}*/
                 /*variant={'contained'}*/
                 size={'large'}
-                onClick={() => validateUser(user)}
+                /*onSubmit={() => validateUser(user)}*/
+                type={'submit'}
             >
               Log in
             </Button>

@@ -26,7 +26,7 @@ const useStyles = makeStyles(({size, spacing, palette, shadows}) => ({
     boxShadow: shadows[10]
   },
   open: {
-    width: size.drawer
+    minWidth: size.drawer
   },
   title: {
     marginBottom: spacing(3)
