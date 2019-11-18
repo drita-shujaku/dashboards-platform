@@ -57,20 +57,32 @@ const search = (state = '', action) => {
 
 export const filteredItems = (state) => {
   const { items, search } = state
+  console.log('search is', search)
   return items.filter(item => {
     const { name, description } = item
     return [name, description].join().toLowerCase().includes(search.toLowerCase())
   }).sort((a, b) => moment(b.createdAt) - moment(a.createdAt))
 }
 
+export const detectChange = (state = false, action) => {
+  switch (action.type) {
+    case ACTION_TYPES.UPDATE_DASHBOARD:
+    case ACTION_TYPES.DELETE_DASHBOARD:
+      return true
+    default:
+      return false
+  }
+}
+
 
 const dashboardsReducer = (state = {}, action) => ({
   items: dashboards(state.items, action),
   request: request(state.request, action),
-  search: search(state.search, action)
+  search: search(state.search, action),
+  change: detectChange(state.change, action)
 })
 
-const appendChildren = (dashboards, current = undefined) => {
+export const appendChildren = (dashboards, current) => {
   const callback = (item) => !!current ? current.id === item.parentId : !item.parentId
   return dashboards.filter(callback).map(item => ({
     ...item,

@@ -37,12 +37,13 @@ const useStyles = makeStyles(({ palette, size, spacing, typography }) => ({
   },
 }))
 
-const CreateProject = (props) => {
+const Project = (props) => {
 
-  const { addDashboard, onClose, parent, fetchDashboards } = props
+  const { addDashboard, onClose, parent, dashboard } = props
+  const { name = '', description = '' } = dashboard
   const classes = useStyles()
 
-  const [ project, setProject ] = useState({ name: '', description: '', warning: '' })
+  const [ project, setProject ] = useState({ name, description, warning: '' })
 
   const handleChange = (event) => {
     const { name, value } = event.target
@@ -55,8 +56,12 @@ const CreateProject = (props) => {
     if (!(project.name && project.description)) {
       setProject({ ...project, warning: 'Please fill out all the fields!' })
     } else {
-      addDashboard({ name, description, ...(!!parent && { parentId: parent.id }) })
-      //fetchDashboards()
+      addDashboard({
+        ...dashboard,
+        ...(!!parent && { parentId: parent.id }),
+        name,
+        description
+      })
       onClose()
     }
   }
@@ -119,9 +124,9 @@ const mapDispatchToProps = ({
   fetchDashboards
 })
 
-CreateProject.propTypes = {
+Project.propTypes = {
   parent: PropTypes.object,
   onClose: PropTypes.func
 }
 
-export default connect(null, mapDispatchToProps)(CreateProject)
+export default connect(null, mapDispatchToProps)(Project)

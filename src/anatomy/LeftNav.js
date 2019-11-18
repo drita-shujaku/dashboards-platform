@@ -1,12 +1,12 @@
 import React, { useState } from 'react'
-import { makeStyles, Typography, Fab } from '@material-ui/core'
+import { Fab, makeStyles, Typography } from '@material-ui/core'
 import { connect } from 'react-redux'
 import { switchTheme } from 'reducers/Theme'
 import { VisibilityOutlined, KeyboardArrowLeftOutlined } from '@material-ui/icons'
 import clsx from 'clsx'
 import { dashboardsHierarchy } from 'reducers/dashboards/Dashboards'
 import LoadingIndicator from 'utils/LoadingIndicator'
-import { NavLink } from 'react-router-dom'
+import { NavLink, Link } from 'react-router-dom'
 
 const useStyles = makeStyles(({size, spacing, palette, shadows}) => ({
   root: {
@@ -23,7 +23,7 @@ const useStyles = makeStyles(({size, spacing, palette, shadows}) => ({
     //paddingLeft: spacing(5),
     backgroundColor: palette.primary.main,
     color: palette.common.white,
-    boxShadow: shadows[10]
+    boxShadow: '10px 0px 30px rgb(0, 0, 0, 0.3)'
   },
   open: {
     minWidth: size.drawer
@@ -35,12 +35,17 @@ const useStyles = makeStyles(({size, spacing, palette, shadows}) => ({
     color: palette.text.secondary,
     textOverflow: 'ellipsis'
   },
-  menuLink: {
-    color: palette.text.secondary,
+  link: {
     textDecoration: 'none',
     '&:hover': {
       color: palette.secondary.main
     }
+  },
+  dashboardsLink: {
+    color: palette.secondary.contrastText
+  },
+  menuLink: {
+    color: palette.text.secondary
   },
   activeMenuLink: {
     color: palette.secondary.main
@@ -92,6 +97,8 @@ const useStyles = makeStyles(({size, spacing, palette, shadows}) => ({
   }
 }))
 
+const theme = (type) => type === 'light' ? 'dark' : 'light'
+
 const LeftNav = (props) => {
 
   const { type, switchTheme, dashboards, dashboardsLoading } = props
@@ -109,7 +116,7 @@ const LeftNav = (props) => {
     return first.toUpperCase() + rest.join("")
   }
 
-  const theme = capitalize(type)
+  //const theme = capitalize(type)
 
   console.log('dashboards', dashboards)
 
@@ -122,7 +129,7 @@ const LeftNav = (props) => {
               <li key={dashboard.id}>
                 <NavLink
                     to={`/dashboards/${dashboard.id}`}
-                    className={classes.menuLink}
+                    className={clsx(classes.link, classes.menuLink)}
                     activeClassName={classes.activeMenuLink}
                 >
                   {displayCharacters(dashboard.name, 30)}
@@ -139,7 +146,7 @@ const LeftNav = (props) => {
       <div className={clsx(classes.root, open && classes.open)}>
         <div>
           <Typography variant={'h5'} className={classes.title}>
-            Overview
+            <Link to={'/dashboards'} className={clsx(classes.link, classes.dashboardsLink)}>Overview</Link>
           </Typography>
           <div className={classes.directory}>
             {dashboardsLoading ? <LoadingIndicator/> : renderList(dashboards, 0)}
@@ -148,8 +155,8 @@ const LeftNav = (props) => {
         <div className={classes.switchTheme}>
           <span>Dark mode</span>
           <div
-              className={clsx(classes.switcher)}
-              onClick={() => switchTheme(type === 'dark' ? 'light' : 'dark')}
+              className={classes.switcher}
+              onClick={() => switchTheme(theme(type))}
           >
             <Fab classes={{root: classes.fabRoot}} className={classes[type]}>
               <VisibilityOutlined className={classes.icon}/>

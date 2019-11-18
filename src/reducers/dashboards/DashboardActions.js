@@ -70,7 +70,7 @@ export const deleteDashboard = (item) => {
     dispatch(requestDashboards())
     return dispatch({
       [CALL_API]: {
-        endpoint: '/dashboard',
+        endpoint: '/dashboard/',
         options: {
           method: 'DELETE',
           body: JSON.stringify(item)

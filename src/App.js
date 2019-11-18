@@ -8,12 +8,8 @@ import { CssBaseline } from '@material-ui/core'
 import PrivateRoute from 'PrivateRoute'
 import { Provider } from 'react-redux'
 import LoadingIndicator from 'utils/LoadingIndicator'
-import Header from 'anatomy/Header'
-import Factory from 'pages/Factory'
 const Login = lazy(() => import('pages/Login'))
 const Dashboards = lazy(() => import('pages/Dashboards'))
-const CreateProject = lazy(() => import('pages/CreatePoject'))
-//import Page from 'pages/Page'
 
 const App = () => {
 
@@ -28,9 +24,6 @@ const App = () => {
                   <Route path={'/login'}>
                     <Login/>
                   </Route>
-{/*                  <Route path={'/create'}>
-                    <CreateProject/>
-                  </Route>*/}
                   <PrivateRoute path={'/dashboards/:id'}>
                     <Dashboards/>
                   </PrivateRoute>

@@ -95,7 +95,6 @@ const Login = (props) => {
                 variant={'filled'}
                 value={user.username}
                 autoFocus={true}
-                //InputProps={{disableUnderline:true}}
                 onChange={handleChange}
             />
             <TextField
@@ -110,10 +109,7 @@ const Login = (props) => {
           <FormActions className={classes.actions}>
             <Button
                 className={classes.button}
-                /*color={'secondary'}*/
-                /*variant={'contained'}*/
                 size={'large'}
-                /*onSubmit={() => validateUser(user)}*/
                 type={'submit'}
             >
               Log in

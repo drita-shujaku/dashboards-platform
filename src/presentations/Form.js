@@ -31,14 +31,14 @@ const useStyles = makeStyles(({palette, spacing, shadows}) => ({
     justifyContent: props => props.justifyContent
   },
   warning: {
-    color: palette.error.main
+    color: props => props.color || palette.error.dark
   },
 }))
 
 export const FormBody = (props) => {
 
   const { children, message } = props
-  const classes = useStyles()
+  const classes = useStyles(props)
 
   return (
       <div className={classes.body}>

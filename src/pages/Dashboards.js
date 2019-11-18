@@ -1,19 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
-import { useHistory, Switch } from 'react-router-dom'
-import { addDashboard, fetchDashboards } from 'reducers/dashboards/DashboardActions'
+import { addDashboard, deleteDashboard, fetchDashboards, filter } from 'reducers/dashboards/DashboardActions'
 import LeftNav from 'anatomy/LeftNav'
-import { makeStyles } from '@material-ui/core'
-import { Button, Fab, InputAdornment } from '@material-ui/core'
-import { Search } from '@material-ui/icons'
+import { Button, Fab, IconButton, InputAdornment, makeStyles, TextField } from '@material-ui/core'
+import { Add, Search } from '@material-ui/icons'
 import { logOut } from 'reducers/users/UsersActions'
-import { Add } from '@material-ui/icons'
-import { filteredItems } from 'reducers/dashboards/Dashboards'
-import TextField from '@material-ui/core/TextField'
-import IconButton from '@material-ui/core/IconButton'
+import { appendChildren, filteredItems } from 'reducers/dashboards/Dashboards'
 import Header from 'anatomy/Header'
-import CreateProject from 'pages/CreatePoject'
-import Form, { FormActions } from 'presentations/Form'
+import Project from 'pages/Project'
+import DashboardsGrid from 'presentations/DashboardsGrid'
 
 
 const useStyles = makeStyles(({ palette, spacing, size }) => ({
@@ -22,7 +17,8 @@ const useStyles = makeStyles(({ palette, spacing, size }) => ({
   },
   page: {
     display: 'flex',
-    backgroundColor: palette.background.main
+    backgroundColor: palette.background.main,
+    color: palette.primary.contrastText
   },
   content: {
     padding: spacing(5)
@@ -60,37 +56,54 @@ const useStyles = makeStyles(({ palette, spacing, size }) => ({
 }))
 
 const Dashboards = (props) => {
-  const { user, fetchDashboards, dashboards, match: { params: { id = '' } } } = props
+  const {
+    user,
+    fetchDashboards,
+    deleteDashboard,
+    dashboards,
+    filteredDashboards,
+    dashboardsChange,
+    search,
+    filter,
+    match: { params: { id = '' } }
+  } = props
   const classes = useStyles()
 
-  console.log('dashboards props', props)
-
-  const [ search, setSearch ] = useState('')
-  const [ openCreate, setOpenCreate ] = useState(false)
+  const [ project, setProject ] = useState({ editing: {}, open: false })
   const [ selectedDashboard, selectDashboard ] = useState(undefined)
+  let dashboard = undefined
 
   useEffect(() => {
     fetchDashboards()
-  }, [ openCreate ])
+  }, [ dashboardsChange, id ])
 
   useEffect(() => {
     selectDashboard(dashboards.find(dashboard => dashboard.id === id))
-  }, [ id, dashboards ])
+  }, [ dashboards, id ])
 
   const handleChange = (event) => {
     const { value } = event.target
-    setSearch(value)
+    filter(value)
+  }
+
+  const onDelete = (item) => {
+    console.log('here we are')
+    deleteDashboard(item)
+  }
+
+  const onEdit = (item) => {
+    setProject({ editing: item, open: true })
   }
 
   const onClose = () => {
-    setOpenCreate(false)
+    setProject({editing: {}, open: false})
   }
 
   const makeBreadcrumbs = (dashboard = [], breadcrumbs = []) => {
     breadcrumbs = [ dashboard, ...breadcrumbs ]
     if (!!dashboard.parentId) {
-      dashboard = dashboards.find(item => item.id === dashboard.parentId)
-      breadcrumbs = makeBreadcrumbs(dashboard, breadcrumbs)
+      const parent = dashboards.find(item => item.id === dashboard.parentId)
+      breadcrumbs = makeBreadcrumbs(parent, breadcrumbs)
     }
     return breadcrumbs
   }
@@ -123,10 +136,16 @@ const Dashboards = (props) => {
                   }}
               />
             </div>
-            <div>Welcome home {user.username}!</div>
-            <div></div>
+
+            <DashboardsGrid
+                dashboards={appendChildren(filteredDashboards, selectedDashboard)}
+                onDelete={onDelete}
+                onEdit={onEdit}
+            />
+
           </div>
           <div className={classes.logOut}>
+            {user.username}
             <Button
                 color={'secondary'}
                 size={'large'}
@@ -138,27 +157,31 @@ const Dashboards = (props) => {
           <Fab
               className={classes.addButton}
               color={'secondary'}
-              /*onClick={() => history.push('/create')}*/
-              onClick={() => setOpenCreate(true)}
+              onClick={() => setProject({...project, open: true})}
           >
             <Add className={classes.icon}/>
           </Fab>
         </div>
-        {openCreate && <CreateProject onClose={onClose} parent={selectedDashboard}/>}
+        {project.open && <Project onClose={onClose} parent={selectedDashboard} dashboard={project.editing}/>}
       </div>
   )
 }
 
 const matchStateToProps = (state) => ({
   user: state.session.user,
-  dashboards: filteredItems(state.dashboards),
-  authenticated: state.session.authenticated
+  dashboards: state.dashboards.items,
+  filteredDashboards: filteredItems(state.dashboards),
+  authenticated: state.session.authenticated,
+  dashboardsChange: state.dashboards.change,
+  search: state.dashboards.search
 })
 
 const matchDispatchToProps = ({
   fetchDashboards,
   logOut,
-  addDashboard
+  addDashboard,
+  deleteDashboard,
+  filter
 })
 
 export default connect(matchStateToProps, matchDispatchToProps)(Dashboards)

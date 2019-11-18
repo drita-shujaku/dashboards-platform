@@ -4,13 +4,14 @@ const palette = {
       //light: '#eaeff1',
       light: '#283642',
       main: '#293642',
-      dark: '#334353',
-      //dark: '#00101b',
+      //dark: '#334353',
+      dark: '#00101b',
       //dark: '#2B7285',
-      contrastText: '#fffff'
+      contrastText: '#94A6B8'
     },
     secondary: {
-      light: '#50c0e5',
+      //light: '#50c0e5',
+      light: '#D8F1F9',
       main: '#3cb9e2',
       //dark: '#38aed4',
       dark: '#0093BB',
@@ -36,13 +37,15 @@ const palette = {
       //light: '#eaeff1',
       light: '#283642',
       main: '#293642',
-      dark: '#73818F',
-      //dark: '#34576A',
+      //dark: '#73818F',
+      dark: '#34576A',
       //dark: '#10161a',
-      contrastText: '#94a6b8'
+      //contrastText: '#94a6b8'
+      contrastText: '#ffffff'
     },
     secondary: {
-      light: '#50c0e5',
+      //light: '#50c0e5',
+      light: '#34576A',
       main: '#3cb9e2',
       //dark: '#38aed4',
       dark: '#0093BB',
