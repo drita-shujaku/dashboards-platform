@@ -61,7 +61,8 @@ export const filteredItems = (state) => {
   return items.filter(item => {
     const { name, description } = item
     return [name, description].join().toLowerCase().includes(search.toLowerCase())
-  }).sort((a, b) => moment(b.createdAt) - moment(a.createdAt))
+  })
+  //    .sort((a, b) => moment(b.createdAt) - moment(a.createdAt))
 }
 
 export const detectChange = (state = false, action) => {

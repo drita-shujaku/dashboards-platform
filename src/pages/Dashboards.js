@@ -7,40 +7,66 @@ import { Add, Search } from '@material-ui/icons'
 import { logOut } from 'reducers/users/UsersActions'
 import { appendChildren, filteredItems } from 'reducers/dashboards/Dashboards'
 import Header from 'anatomy/Header'
-import Project from 'pages/Project'
+import ProjectForm from 'pages/ProjectForm'
 import DashboardsGrid from 'presentations/DashboardsGrid'
+import { GridViewIcon, ListViewIcon } from 'presentations/icons'
+import clsx from 'clsx'
+import Page from 'pages/Page'
+import WidgetsView from 'presentations/WidgetsView'
 
 
 const useStyles = makeStyles(({ palette, spacing, size }) => ({
-  root: {
-    position: 'relative',
-  },
+  /*  root: {
+      position: 'relative',
+    },*/
   page: {
+    position: 'relative',
     display: 'flex',
+    height: '100%',
+    width: '100%',
     backgroundColor: palette.background.main,
     color: palette.primary.contrastText
   },
   content: {
+    width: '100%',
+    height: '100%',
     padding: spacing(5)
   },
-  header: {
-    paddingBottom: spacing(2)
-  },
-  search: {
+  breadcrumbs: {
     marginBottom: spacing(2)
   },
+  search: {
+    marginBottom: spacing(2),
+    display: 'flex',
+    flexFlow: 'row',
+    justifyContent: 'space-between'
+  },
+  viewMode: {
+    alignSelf: 'flex-end'
+  },
+  gridViewMode: {
+    '&:hover, &$active': {
+      color: palette.secondary.main,
+      cursor: 'pointer'
+    }
+  },
+  listViewMode: {
+    stroke: palette.text.secondary,
+    marginRight: spacing(),
+    '&:hover, &$active': {
+      stroke: palette.secondary.main,
+      cursor: 'pointer'
+    }
+  },
+  active: {},
   logOut: {
-    marginLeft: 'auto',
-    padding: spacing()
-  },
-  addButton: {
-    position: 'fixed',
-    right: spacing(6),
-    bottom: spacing(4)
-  },
-  icon: {
-    width: size.icon,
-    height: size.icon
+    position: 'absolute',
+    padding: spacing(),
+    right: 0,
+    top: 0,
+    '& > *': {
+      padding: spacing(),
+    }
   },
   searchIcon: {
     color: palette.text.secondary
@@ -54,6 +80,8 @@ const useStyles = makeStyles(({ palette, spacing, size }) => ({
     zIndex: 5
   }
 }))
+
+const VIEW_MODE = { GRID: 'grid', LIST: 'list' }
 
 const Dashboards = (props) => {
   const {
@@ -71,7 +99,9 @@ const Dashboards = (props) => {
 
   const [ project, setProject ] = useState({ editing: {}, open: false })
   const [ selectedDashboard, selectDashboard ] = useState(undefined)
-  let dashboard = undefined
+  const [ viewMode, setViewMode ] = useState(VIEW_MODE.GRID)
+
+  const modeIsSelected = (type) => viewMode === type
 
   useEffect(() => {
     fetchDashboards()
@@ -87,16 +117,15 @@ const Dashboards = (props) => {
   }
 
   const onDelete = (item) => {
-    console.log('here we are')
     deleteDashboard(item)
   }
 
-  const onEdit = (item) => {
+  const onEdit = (item = {}) => {
     setProject({ editing: item, open: true })
   }
 
   const onClose = () => {
-    setProject({editing: {}, open: false})
+    setProject({ editing: {}, open: false })
   }
 
   const makeBreadcrumbs = (dashboard = [], breadcrumbs = []) => {
@@ -111,11 +140,22 @@ const Dashboards = (props) => {
   const breadcrumbs = makeBreadcrumbs(selectedDashboard)
 
   return (
-      <div className={classes.root}>
-        <div className={classes.page}>
-          <LeftNav/>
-          <div className={classes.content}>
-            {!!selectedDashboard && <div className={classes.header}>
+      <Page>
+        {project.open && <ProjectForm onClose={onClose} parent={selectedDashboard} dashboard={project.editing}/>}
+        <LeftNav/>
+        <div className={classes.content}>
+          <div className={classes.logOut}>
+            <span>{user.username}</span>
+            <Button
+                color={'secondary'}
+                size={'large'}
+                onClick={() => logOut()}
+            >
+              Log out
+            </Button>
+          </div>
+          <div className={classes.header}>
+            {!!selectedDashboard && <div className={classes.breadcrumbs}>
               <Header breadcrumbs={breadcrumbs}/>
             </div>}
             <div className={classes.search}>
@@ -135,35 +175,28 @@ const Dashboards = (props) => {
                         </InputAdornment>)
                   }}
               />
+              <div className={classes.viewMode}>
+                <ListViewIcon
+                    className={clsx(classes.listViewMode, modeIsSelected(VIEW_MODE.LIST) && classes.active)}
+                    onClick={() => setViewMode(VIEW_MODE.LIST)}
+                />
+                <GridViewIcon
+                    className={clsx(classes.gridViewMode, modeIsSelected(VIEW_MODE.GRID) && classes.active)}
+                    onClick={() => setViewMode(VIEW_MODE.GRID)}
+                />
+              </div>
             </div>
-
-            <DashboardsGrid
-                dashboards={appendChildren(filteredDashboards, selectedDashboard)}
-                onDelete={onDelete}
-                onEdit={onEdit}
-            />
-
           </div>
-          <div className={classes.logOut}>
-            {user.username}
-            <Button
-                color={'secondary'}
-                size={'large'}
-                onClick={() => logOut()}
-            >
-              Log out
-            </Button>
-          </div>
-          <Fab
-              className={classes.addButton}
-              color={'secondary'}
-              onClick={() => setProject({...project, open: true})}
-          >
-            <Add className={classes.icon}/>
-          </Fab>
+          <DashboardsGrid
+              dashboards={appendChildren(filteredDashboards, selectedDashboard)}
+              onDelete={onDelete}
+              onEdit={onEdit}
+              view={viewMode}
+          />
+          <WidgetsView/>
+
         </div>
-        {project.open && <Project onClose={onClose} parent={selectedDashboard} dashboard={project.editing}/>}
-      </div>
+      </Page>
   )
 }
 

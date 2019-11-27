@@ -30,6 +30,7 @@ const palette = {
       dark: '#94A6B8'
     },
     field: '#d9e0e6',
+    border: '#c3eaf7',
     switcher: '#a3b3c2'
   },
   dark: {
@@ -64,6 +65,7 @@ const palette = {
       default: '#334353'
     },
     field: '#293642',
+    border: '#314151',
     switcher: '#3cb9e2'
   }
 }
@@ -76,10 +78,10 @@ const theme = (type = 'light') => ({
   size: {
     displayFont: 48,
     avatar: 48,
+    titleFont: 30,
     headingFont: 28,
     icon: 24,
     headerFont: 22,
-    titleFont: 16,
     defaultFont: 14,
     captionFont: 12,
     smallFont: 10,

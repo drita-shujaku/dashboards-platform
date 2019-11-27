@@ -3,24 +3,24 @@ import { connect } from 'react-redux'
 import { makeStyles, Typography } from '@material-ui/core'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
-import { addDashboard, fetchDashboards } from 'reducers/dashboards/DashboardActions'
+import { addDashboard } from 'reducers/dashboards/DashboardActions'
 import Form, { FormActions, FormBody } from 'presentations/Form'
 import PropTypes from 'prop-types'
 
-const useStyles = makeStyles(({ palette, size, spacing, typography }) => ({
+const useStyles = makeStyles(({ palette, zIndex, spacing, typography }) => ({
   root: {
     display: 'flex',
     alignItems: 'center',
-    flexFlow: 'row wrap',
+    //flexFlow: 'row wrap',
     backgroundColor: palette.background.default,
     //opacity: 0.8,
-    position: 'absolute',
+    position: 'fixed',
     left: 0,
     top: 0,
     height: '100%',
     width: '100%',
-    zIndex: 2
-    //color: palette.text.default,
+    zIndex: zIndex.modal,
+    color: palette.text.primary,
   },
   title: {
     fontWeight: typography.fontWeightBold,
@@ -37,7 +37,7 @@ const useStyles = makeStyles(({ palette, size, spacing, typography }) => ({
   },
 }))
 
-const Project = (props) => {
+const ProjectForm = (props) => {
 
   const { addDashboard, onClose, parent, dashboard } = props
   const { name = '', description = '' } = dashboard
@@ -53,7 +53,7 @@ const Project = (props) => {
   const saveProject = (event) => {
     event.preventDefault()
     const { name, description } = project
-    if (!(project.name && project.description)) {
+    if (!(name && description)) {
       setProject({ ...project, warning: 'Please fill out all the fields!' })
     } else {
       addDashboard({
@@ -120,13 +120,13 @@ const Project = (props) => {
 }
 
 const mapDispatchToProps = ({
-  addDashboard,
-  fetchDashboards
+  addDashboard
 })
 
-Project.propTypes = {
+ProjectForm.propTypes = {
   parent: PropTypes.object,
+  dashboard: PropTypes.object,
   onClose: PropTypes.func
 }
 
-export default connect(null, mapDispatchToProps)(Project)
+export default connect(null, mapDispatchToProps)(ProjectForm)

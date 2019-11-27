@@ -9,7 +9,6 @@ const useStyles = makeStyles(({ palette, size }) => ({
   },
   navLink: {
     color: palette.text.default,
-    textDecoration: 'none',
     '&:hover': {
       color: palette.secondary.main
     }

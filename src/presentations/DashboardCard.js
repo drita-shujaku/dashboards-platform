@@ -2,49 +2,47 @@
  * Created by Drita Shujaku on 11/13/2019
  */
 
-import React, { useState } from 'react'
-import { IconButton, makeStyles, Menu, MenuItem, Typography, Fade } from '@material-ui/core'
+import React from 'react'
+import { CardActions, CardContent, CardHeader, IconButton, makeStyles, Typography } from '@material-ui/core'
 import { Link, NavLink } from 'react-router-dom'
 import moment from 'moment'
-import { DeleteOutlined, EditOutlined, MoreVert } from '@material-ui/icons'
-import { deleteDashboard } from 'reducers/dashboards/DashboardActions'
+import { MoreVert } from '@material-ui/icons'
+import Card from '@material-ui/core/Card'
 
-const useStyles = makeStyles(({ spacing, size, palette, shadows }) => ({
+const useStyles = makeStyles(({ spacing, size, palette, typography }) => ({
   root: {
-    minWidth: 320,
-    minHeight: 200,
+    color: palette.primary.contrastText,
+    minHeight: 270,
+    width: 480,
     backgroundColor: palette.background.light,
     borderRadius: size.radius,
     boxShadow: '0px 4px 5px rgba(0, 0, 0, 0.16)',
     padding: `${spacing(2)}px ${spacing(3)}px`,
     '& > *': {
       padding: `${spacing()}px 0px`
-    }
-  },
-  actions: {
+    },
     display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center'
+    flexDirection: 'column'
+  },
+  bullet: {
+    display: 'inline-block',
+    margin: `0 ${spacing()}px`,
+    transform: 'scale(1.5)',
   },
   moreButton: {
     padding: spacing(),
-    marginRight: -spacing(2),
-    position: 'relative'
+    marginRight: -spacing()
   },
-  cardDropdown: {
-    boxShadow: '0px 5px 20px rgb(0, 0, 0, 0.22)'
-  },
-  menuItem: {
-    '& > *:not(:last-child)': {
-      marginRight: spacing()
-    }
-  },
-  main: {},
   title: {
-    paddingBottom: spacing()
+    fontSize: size.titleFont,
+    fontWeight: typography.fontWeightMedium,
+    whiteSpace: 'nowrap',
+    width: 'initial',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    color: palette.text.default
   },
   dashboardLink: {
-    textDecoration: 'none',
     color: palette.text.primary,
     '&:hover': {
       color: palette.primary.dark
@@ -53,13 +51,27 @@ const useStyles = makeStyles(({ spacing, size, palette, shadows }) => ({
   label: {
     borderRadius: 100,
     backgroundColor: palette.secondary.light,
+    color: palette.secondary.main,
     padding: `${spacing()}px ${spacing(2)}px`,
-    margin: spacing(1/2),
-    display: 'inline-block'
+    margin: `0px ${spacing()}px ${spacing(1/2)}px 0px`,
+    display: 'inline-block',
+    border: `1px solid ${palette.border}`,
+    maxWidth: 160,
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
   },
-  labelLink: {
-    textDecoration: 'none',
-    color: palette.secondary.main
+  description: {
+    marginTop: spacing(),
+    marginBottom: spacing(),
+    wordBreak: 'break-word',
+    fontSize: typography.body2.fontSize,
+    height: `${typography.body1.lineHeight * 2}em`,
+    overflow: 'hidden'
+  },
+  footer: {
+    marginTop: 'auto',
+    display: 'block'
   }
 }))
 
@@ -69,90 +81,54 @@ const DashboardLabel = (props) => {
   const classes = useStyles(props)
 
   return (
-      <div className={classes.label}>
-        <NavLink to={`/dashboards/${id}`} className={classes.labelLink}>{name}</NavLink>
-      </div>
+      <NavLink to={`/dashboards/${id}`} className={classes.label}>
+        <Typography variant={'caption'}>{name}</Typography>
+      </NavLink>
   )
 }
 
 const DashboardCard = (props) => {
 
-  const { dashboard, onDelete, onEdit } = props
+  const { dashboard, handleClick } = props
   const { name, description, children, createdAt, id } = dashboard
 
+  const classes = useStyles(props)
+
+  const bull = <span className={classes.bullet}>&bull;</span>
+  const date = <span>{moment(createdAt).format('DD.MM.YYYY')}</span>
+
   const numberOfChildren = children.length
-  const classes = useStyles()
-  const popperId = 'popper'
-
-  const [ anchorEl, setAnchorEl ] = useState(null)
-  const popperOpen = Boolean(anchorEl)
-
-  const handleClick = event => {
-    setAnchorEl(event.currentTarget)
-  }
-
-  const handleClose = () => {
-    setAnchorEl(null)
-  }
 
 
   return (
-      <div className={classes.root}>
-        <div className={classes.actions}>
-          <div>
-          {!!numberOfChildren &&
-            <span>
-              {numberOfChildren} {numberOfChildren > 1 ? 'children' : 'child'} &bull;
-            </span>
-          }
-          <span> {moment(createdAt).format('DD.MM.YYYY')}</span>
-          </div>
-          <IconButton
-              className={classes.moreButton}
-              aria-describedby={popperId}
-              aria-controls={'options'}
-              aria-haspopup={'true'}
-              onClick={handleClick}
-          >
-            <MoreVert />
-          </IconButton>
-          <Menu
-              classes={{paper: classes.cardDropdown}}
-              anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-              transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-              getContentAnchorEl={null}
-              id={popperId}
-              anchorEl={anchorEl}
-              open={popperOpen}
-              TransitionComponent={Fade}
-              onClick={handleClose}
-              onClose={handleClose}
-          >
-            <MenuItem
-                className={classes.menuItem}
-                onClick={() => onEdit(dashboard)}
-            >
-              <EditOutlined/>
-              <span>edit</span>
-            </MenuItem>
-            <MenuItem
-                className={classes.menuItem}
-                onClick={() => onDelete(dashboard)}>
-              <DeleteOutlined/>
-              <span>delete</span>
-            </MenuItem>
-          </Menu>
-        </div>
-        <div className={classes.main}>
-          <Typography variant={'h6'} className={classes.title}>
+      <Card className={classes.root}>
+        <CardHeader
+            action={
+              <IconButton className={classes.moreButton} onClick={(event) => handleClick(event, dashboard)}>
+                <MoreVert/>
+              </IconButton>
+            }
+            subheader={
+              <Typography variant={'caption'}>
+                {!!numberOfChildren &&
+                <span>
+                  {numberOfChildren} {numberOfChildren > 1 ? 'children' : 'child'}
+                  {bull}
+                </span>}
+                {date}
+              </Typography>
+            }
+        />
+        <CardContent>
+          <Typography variant={'h5'} className={classes.title}>
             <Link to={`/dashboards/${id}`} className={classes.dashboardLink}>{name}</Link>
           </Typography>
-          <Typography variant={'body2'}>{description}</Typography>
-        </div>
-        <div className={classes.footer}>
+          <Typography variant={'body1'} className={classes.description}>{description}</Typography>
+        </CardContent>
+        <CardActions className={classes.footer}>
           {children.map((child, index) => <DashboardLabel key={`child-${index}`} dashboard={child}/>)}
-        </div>
-      </div>
+        </CardActions>
+      </Card>
   )
 }
 

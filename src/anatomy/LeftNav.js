@@ -1,29 +1,33 @@
 import React, { useState } from 'react'
-import { Fab, makeStyles, Typography } from '@material-ui/core'
+import { makeStyles, Typography } from '@material-ui/core'
 import { connect } from 'react-redux'
 import { switchTheme } from 'reducers/Theme'
-import { VisibilityOutlined, KeyboardArrowLeftOutlined } from '@material-ui/icons'
+import { KeyboardArrowLeftOutlined } from '@material-ui/icons'
 import clsx from 'clsx'
 import { dashboardsHierarchy } from 'reducers/dashboards/Dashboards'
 import LoadingIndicator from 'utils/LoadingIndicator'
 import { NavLink, Link } from 'react-router-dom'
+import { truncate } from 'utils/helper-functions'
+import Switch from 'presentations/Switch'
 
-const useStyles = makeStyles(({size, spacing, palette, shadows}) => ({
+const useStyles = makeStyles(({size, spacing, palette, zIndex}) => ({
   root: {
     display: 'flex',
     justifyContent: 'space-between',
     flexFlow: 'column',
     overflowX: 'hidden',
-    height: '100vh',
+    height: '100%',
     width: 0,
     //position: 'relative',
+    position: 'fixed',
     top: 0,
     left: 0,
     padding: spacing(5),
     //paddingLeft: spacing(5),
     backgroundColor: palette.primary.main,
     color: palette.common.white,
-    boxShadow: '10px 0px 30px rgb(0, 0, 0, 0.3)'
+    boxShadow: '10px 0px 30px rgb(0, 0, 0, 0.3)',
+    zIndex: zIndex.drawer
   },
   open: {
     minWidth: size.drawer
@@ -36,7 +40,6 @@ const useStyles = makeStyles(({size, spacing, palette, shadows}) => ({
     textOverflow: 'ellipsis'
   },
   link: {
-    textDecoration: 'none',
     '&:hover': {
       color: palette.secondary.main
     }
@@ -67,37 +70,10 @@ const useStyles = makeStyles(({size, spacing, palette, shadows}) => ({
     flexFlow: 'row nowrap',
     alignSelf: 'center',
     alignItems: 'center',
-  },
-  switcher: {
-    position: 'relative',
-    height: spacing(4) + spacing(),
-    width: spacing(8),
-    borderRadius: 100,
-    padding: spacing(1/2),
-    marginLeft: spacing(),
-    cursor: 'pointer',
-    backgroundColor: palette.switcher
-  },
-  light: {
-      left: spacing(1/2),
-  },
-  dark: {
-      left: `calc(100% - ${spacing(4) + spacing(1/2)}px)`
-  },
-  fabRoot: {
-    position: 'absolute',
-    minHeight: size.icon,
-    width: spacing(4),
-    transition: 'all 300ms',
-    height: spacing(4),
-  },
-  icon: {
-    height: 18,
-    width: 18
   }
 }))
 
-const theme = (type) => type === 'light' ? 'dark' : 'light'
+const change = (type) => type === 'light' ? 'dark' : 'light'
 
 const LeftNav = (props) => {
 
@@ -105,18 +81,6 @@ const LeftNav = (props) => {
   const classes = useStyles()
 
   const [open, setOpen] = useState(true)
-
-  const displayCharacters = (string, number) => {
-    return string.length > number ? string.substr(0, number) + '...' : string
-  }
-
-
-  const capitalize = (text) => {
-    let [first, ...rest] = text
-    return first.toUpperCase() + rest.join("")
-  }
-
-  //const theme = capitalize(type)
 
   console.log('dashboards', dashboards)
 
@@ -132,7 +96,7 @@ const LeftNav = (props) => {
                     className={clsx(classes.link, classes.menuLink)}
                     activeClassName={classes.activeMenuLink}
                 >
-                  {displayCharacters(dashboard.name, 30)}
+                  {truncate(dashboard.name, 30)}
                 </NavLink>
                 {renderList(dashboard.children, level + 1)}
               </li>)
@@ -154,14 +118,7 @@ const LeftNav = (props) => {
         </div>
         <div className={classes.switchTheme}>
           <span>Dark mode</span>
-          <div
-              className={classes.switcher}
-              onClick={() => switchTheme(theme(type))}
-          >
-            <Fab classes={{root: classes.fabRoot}} className={classes[type]}>
-              <VisibilityOutlined className={classes.icon}/>
-            </Fab>
-          </div>
+          <Switch onClick={() => switchTheme(change(type))} theme={type}/>
         </div>
       </div>
   )

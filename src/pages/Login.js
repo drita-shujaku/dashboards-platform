@@ -4,8 +4,7 @@ import { useHistory, useLocation } from 'react-router-dom'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
 import { makeStyles } from '@material-ui/core'
-import Logo from 'presentations/icons/Logo'
-import LogoTextIcon from 'presentations/icons/LogoTextIcon'
+import { Logo, LogoTextIcon } from 'presentations/icons'
 import { logIn } from 'reducers/users/UsersActions'
 import Form, { FormActions, FormBody } from 'presentations/Form'
 
@@ -14,11 +13,11 @@ const useStyles = makeStyles(({ palette, spacing, size, shadows }) => ({
     width: '100%',
     display: 'flex',
     alignItems: 'center',
-    flexFlow: 'row wrap',
+    //flexFlow: 'row wrap',
     backgroundColor: palette.background.default,
-    opacity: 0.8,
-    height: '100vh',
-    overflow: 'hidden',
+    //opacity: 0.8,
+    height: '100%',
+    //overflow: 'hidden',
     color: palette.text.default,
   },
   header: {
