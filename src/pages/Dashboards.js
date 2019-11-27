@@ -193,7 +193,7 @@ const Dashboards = (props) => {
               onEdit={onEdit}
               view={viewMode}
           />
-          <WidgetsView/>
+          {/*<WidgetsView/>*/}
 
         </div>
       </Page>
