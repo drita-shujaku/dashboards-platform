@@ -38,8 +38,8 @@ const palette = {
       //light: '#eaeff1',
       light: '#283642',
       main: '#293642',
-      //dark: '#73818F',
-      dark: '#34576A',
+      //dark: '#34576A',
+      dark: '#182530',
       //dark: '#10161a',
       //contrastText: '#94a6b8'
       contrastText: '#ffffff'

@@ -13,6 +13,7 @@ import { GridViewIcon, ListViewIcon } from 'presentations/icons'
 import clsx from 'clsx'
 import Page from 'pages/Page'
 import WidgetsView from 'presentations/WidgetsView'
+import { fetchContent } from 'reducers/content/ContentActions'
 
 
 const useStyles = makeStyles(({ palette, spacing, size }) => ({
@@ -193,7 +194,7 @@ const Dashboards = (props) => {
               onEdit={onEdit}
               view={viewMode}
           />
-          {/*<WidgetsView/>*/}
+          <WidgetsView dashboard={selectedDashboard}/>
 
         </div>
       </Page>

@@ -71,7 +71,7 @@ const ProjectForm = (props) => {
         <Form width={500} onSubmit={saveProject}>
           <div className={classes.header}>
             <Typography variant={'h5'} className={classes.title}>
-              Create new project
+              {!!dashboard.name ? 'Edit project' : 'Create new project'}
             </Typography>
           </div>
           <FormBody message={project.warning}>

@@ -11,17 +11,20 @@ import { MoreVert } from '@material-ui/icons'
 const useStyles = makeStyles(({palette, size, spacing, typography}) => ({
   root: {
     width: '100%',
+    minWidth: 'fit-content',
     color: palette.primary.contrastText,
     backgroundColor: palette.background.light,
     borderRadius: size.radius,
     boxShadow: '0px 4px 5px rgba(0, 0, 0, 0.16)',
     padding: `${spacing()}px ${spacing(3)}px`,
+    display: 'flex',
+    justifyContent: 'space-between',
     '& > *': {
       display: 'flex',
       flexDirection: 'row',
       alignItems: 'center',
       padding: `${spacing()}px 0px`,
-      marginRight: spacing()
+      marginRight: spacing(),
     }
   },
   dashboardLink: {

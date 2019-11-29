@@ -71,7 +71,8 @@ const useStyles = makeStyles(({ spacing, size, palette, typography }) => ({
   },
   footer: {
     marginTop: 'auto',
-    display: 'block'
+    display: 'block',
+    paddingBottom: 0
   }
 }))
 

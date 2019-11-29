@@ -28,7 +28,6 @@ const useStyles = makeStyles(({ spacing, size }) => ({
     '& > *': {
       marginTop: spacing(),
       display: 'flex',
-      justifyContent: 'space-between'
     },
     '& > *:not(:first-child)': {
       paddingLeft: spacing(5)
