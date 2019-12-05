@@ -10,7 +10,7 @@ import { NavLink, Link } from 'react-router-dom'
 import { truncate } from 'utils/helper-functions'
 import Switch from 'presentations/Switch'
 
-const useStyles = makeStyles(({size, spacing, palette, zIndex}) => ({
+const useStyles = makeStyles(({size, spacing, palette, zIndex, shadow, typography}) => ({
   root: {
     display: 'flex',
     justifyContent: 'space-between',
@@ -26,17 +26,19 @@ const useStyles = makeStyles(({size, spacing, palette, zIndex}) => ({
     //paddingLeft: spacing(5),
     backgroundColor: palette.primary.main,
     color: palette.common.white,
-    boxShadow: '10px 0px 30px rgb(0, 0, 0, 0.3)',
+    boxShadow: shadow.drawer,
     zIndex: zIndex.drawer
   },
   open: {
     minWidth: size.drawer
   },
   title: {
-    marginBottom: spacing(3)
+    marginBottom: spacing(3),
+    fontSize: size.headingFont
   },
   directory: {
     color: palette.text.secondary,
+    fontSize: typography.body1.fontSize,
     textOverflow: 'ellipsis'
   },
   link: {
@@ -70,6 +72,7 @@ const useStyles = makeStyles(({size, spacing, palette, zIndex}) => ({
     flexFlow: 'row nowrap',
     alignSelf: 'center',
     alignItems: 'center',
+    fontSize: typography.body1.fontSize
   }
 }))
 
@@ -82,7 +85,7 @@ const LeftNav = (props) => {
 
   const [open, setOpen] = useState(true)
 
-  console.log('dashboards', dashboards)
+  //console.log('dashboards', dashboards)
 
   const renderList = (dashboards, level) => {
     const notEmpty = dashboards.length > 0
@@ -113,7 +116,8 @@ const LeftNav = (props) => {
             <Link to={'/dashboards'} className={clsx(classes.link, classes.dashboardsLink)}>Overview</Link>
           </Typography>
           <div className={classes.directory}>
-            {dashboardsLoading ? <LoadingIndicator/> : renderList(dashboards, 0)}
+            {renderList(dashboards, 0)}
+            {dashboardsLoading && <LoadingIndicator/>}
           </div>
         </div>
         <div className={classes.switchTheme}>

@@ -3,9 +3,11 @@ import { NavLink } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core'
 import PropTypes from 'prop-types'
 
-const useStyles = makeStyles(({ palette, size }) => ({
+const useStyles = makeStyles(({ palette, size, typography }) => ({
   breadcrumbs: {
-    fontSize: size.headerFont,
+    fontSize: size.titleFont,
+    fontWeight: 500,
+    color: palette.text.default
   },
   navLink: {
     color: palette.text.default,

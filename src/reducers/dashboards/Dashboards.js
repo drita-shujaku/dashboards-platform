@@ -58,7 +58,7 @@ const search = (state = '', action) => {
 export const filteredItems = (state) => {
   const { items, search } = state
   return items.filter(item => {
-    const { name, description } = item
+    const { name = '', description = '' } = item
     return [name, description].join().toLowerCase().includes(search.toLowerCase())
   })
   //    .sort((a, b) => moment(b.createdAt) - moment(a.createdAt))

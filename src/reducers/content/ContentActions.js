@@ -10,14 +10,14 @@ const receiveContent = (data) => ({
   data
 })
 
-const updateContent = (item) => ({
+const updateContent = (data) => ({
   type: ACTION_TYPES.UPDATE_CONTENT,
-  item
+  data
 })
 
-const removeContent = (item) => ({
+const removeContent = (data) => ({
   type: ACTION_TYPES.DELETE_CONTENT,
-  item
+  data
 })
 
 const displayMessage = (response) => ({
@@ -65,6 +65,7 @@ export const fetchContent = (dashboard) => {
 }*/
 
 export const addContent = (item) => {
+  console.log('content to add', item)
   return dispatch => {
     dispatch(requestContent())
     return dispatch({
@@ -87,9 +88,11 @@ export const deleteContent = (item) => {
     dispatch(requestContent())
     return dispatch({
       [CALL_API]: {
-        endpoint: `/dashboard/content/${item.id}`,
+        //endpoint: `/dashboard/content/${item.id}`,
+        endpoint: `/dashboard/content/`,
         options: {
-          method: 'DELETE',
+          //method: 'DELETE',
+          method: 'PUT',
           body: JSON.stringify(item)
         }
       }

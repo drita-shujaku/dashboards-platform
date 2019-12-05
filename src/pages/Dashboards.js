@@ -110,7 +110,7 @@ const Dashboards = (props) => {
 
   useEffect(() => {
     selectDashboard(dashboards.find(dashboard => dashboard.id === id))
-  }, [ dashboards, id ])
+  }, [ dashboards.length, id ])
 
   const handleChange = (event) => {
     const { value } = event.target
@@ -194,7 +194,7 @@ const Dashboards = (props) => {
               onEdit={onEdit}
               view={viewMode}
           />
-          <WidgetsView dashboard={selectedDashboard}/>
+          {!!selectedDashboard && <WidgetsView dashboard={selectedDashboard}/>}
 
         </div>
       </Page>

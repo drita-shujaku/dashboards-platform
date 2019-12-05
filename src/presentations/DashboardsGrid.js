@@ -15,7 +15,7 @@ const useStyles = makeStyles(({ spacing, size }) => ({
     display: 'flex',
     flexFlow: 'row wrap',
     minHeight: '100vh',
-    padding: `${spacing()}px 0`,
+    padding: spacing(1, 0),
     alignContent: 'flex-start',
     '& > *': {
       margin: spacing(2),
@@ -34,8 +34,8 @@ const useStyles = makeStyles(({ spacing, size }) => ({
     }
   },
   addButton: {
-    position: 'fixed',
-    right: spacing(6),
+    position: 'absolute',
+    right: spacing(5),
     bottom: spacing(4)
   }
 }))

@@ -1,29 +1,31 @@
 import ACTION_TYPES from 'reducers/content/ContentActionTypes'
 
-const initialState = []
+const initialState = {
+  content: []
+}
 
-const content = (state = initialState, action) => {
+const content = (state = [], action) => {
   switch (action.type) {
     case ACTION_TYPES.RECEIVE_CONTENT:
-      return action.data
     case ACTION_TYPES.UPDATE_CONTENT:
-      const { item } = action
-      const found = state.find(content => content.id === item.id)
-      if (!found) {
-        return [ ...state, item ]
-      }
-      return state.map(content => {
-        if (content.id === item.id) {
-          return item
-        }
-        return content
-      })
+      return action.data.content
     case ACTION_TYPES.DELETE_CONTENT:
-      return state.filter(content => content.id !== action.item.id)
+      const { id } = action.data.content
+      return state.filter(content => content.id !== id)
+    default:
+      return state
+  }
+}
+
+const board = (state = initialState, action) => {
+  switch (action.type) {
+    case ACTION_TYPES.RECEIVE_CONTENT:
+      return {...action.data, content: content(state.content, action)}
     case ACTION_TYPES.INVALIDATE_CONTENT:
       return initialState
     default:
-      return state
+      console.log('default state', state)
+      return {...state, content: content(state.content, action)}
   }
 }
 
@@ -61,7 +63,7 @@ export const detectChange = (state = false, action) => {
 
 
 const contentReducer = (state = {}, action) => ({
-  items: content(state.items, action),
+  board: board(state.board, action),
   request: request(state.request, action),
   change: detectChange(state.change, action)
 })

@@ -82,11 +82,18 @@ const theme = (type = 'light') => ({
     headingFont: 28,
     icon: 24,
     headerFont: 22,
+    listItemFont: 18,
     defaultFont: 14,
     captionFont: 12,
     smallFont: 10,
     radius: 4,
     drawer: 300
+  },
+  shadow: {
+    default: '0px 4px 5px rgba(0, 0, 0, 0.16)',
+    modal: '0px 15px 20px rgba(0, 0, 0, 0.13)',
+    dropdown: '0px 5px 20px rgb(0, 0, 0, 0.22)',
+    drawer: '10px 0px 30px rgb(0, 0, 0, 0.3)'
   },
   overrides: {
     MuiInputBase: {

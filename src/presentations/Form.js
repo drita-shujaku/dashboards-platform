@@ -3,10 +3,10 @@ import { makeStyles } from '@material-ui/core'
 import PropTypes from 'prop-types'
 
 // noinspection JSCheckFunctionSignatures
-const useStyles = makeStyles(({palette, spacing, shadows}) => ({
+const useStyles = makeStyles(({palette, spacing, shadow}) => ({
   form: {
     backgroundColor: palette.background.light,
-    boxShadow: shadows[4],
+    boxShadow: shadow.modal,
     display: 'flex',
     flexDirection: 'column',
     margin: 'auto',

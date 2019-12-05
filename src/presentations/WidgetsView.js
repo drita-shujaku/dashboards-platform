@@ -9,79 +9,78 @@ import DropdownMenu from 'presentations/DropdownMenu'
 import { Add } from '@material-ui/icons'
 import Information from 'presentations/icons/Information'
 import { connect } from 'react-redux'
-import { fetchContent } from 'reducers/content/ContentActions'
+import { addContent, fetchContent } from 'reducers/content/ContentActions'
+import Widget from 'presentations/Widget'
+import { isArrayEqual } from 'utils/helper-functions'
 
-const styles = ({ palette, spacing }) => ({
+const styles = ({ palette, spacing, zIndex }) => ({
   root: {
-    backgroundColor: palette.primary.main,
+    //backgroundColor: palette.primary.main,
     //padding: spacing(),
-    //height: '100vh',
+    //height: 'calc(100vh - 5%)',
     position: 'relative',
     display: 'flex',
     flexDirection: 'column',
-    padding: `${spacing()}px 0px`,
+    padding: spacing(1, 0),
     marginBottom: spacing(2)
   },
   info: {
     display: 'flex',
     alignItems: 'center',
+    marginBottom: spacing(2),
     '& > *': {
       marginRight: spacing()
     }
   },
   widgetGrid: {
     display: 'flex',
-    flexDirection: 'row',
+    width: '100%',
+    flexFlow: 'row wrap',
     '& > *': {
-      marginRight: spacing(2)
+      marginRight: spacing(2),
+      marginBottom: spacing(2),
+      width: 'fit-content',
+      height: 'fit-content'
     }
   },
   addButton: {
     position: 'absolute',
-    /*    right: spacing(),
-        bottom: spacing(4),*/
-    right: spacing(),
-    bottom: spacing(),
-    zIndex: 1301
+    right: spacing(2),
+    bottom: spacing(3),
+    zIndex: zIndex.modal + 1
   }
 })
 
 const menuOptions = [
   {
     text: 'Note',
-    icon: <Note/>,
-    onClick: () => {
-    }
+    type: 'TEXT',
+    icon: <Note/>
   },
   {
     text: 'Image',
-    icon: <Image/>,
-    onClick: () => {
-    }
+    type: 'IMAGE',
+    icon: <Image/>
   },
   {
     text: 'Line Chart',
-    icon: <Line/>,
-    onClick: () => {
-    }
+    type: 'LINE',
+    icon: <Line/>
   },
   {
     text: 'Bar Chart',
-    icon: <Bar/>,
-    onClick: () => {
-    }
+    type: 'BAR',
+    icon: <Bar/>
   },
   {
     text: 'Pie Chart',
-    icon: <Pie/>,
-    onClick: () => {
-    }
+    type: 'PIE',
+    icon: <Pie/>
   },
   {
     text: 'Treemap',
-    icon: <Treemap/>,
-    onClick: () => {
-    }
+    type: 'TREE',
+    icon: <Treemap/>
   }
 ]
 
@@ -93,18 +92,37 @@ class WidgetsView extends Component {
 
   state = this.initialState
 
-  componentDidMount() {
+  content = (type) => {
+    switch (type) {
+      case 'LINE':
+      case 'BAR':
+      case 'PIE':
+      case 'TREE':
+        return {
+          data: [ { category: 'Male', value: 43 }, { category: 'Female', value: 56 }, { category: 'Other', value: 1 } ]
+        }
+      case 'IMAGE':
+        return { url: 'https://images.unsplash.com/photo-1522124624696-7ea32eb9592c' }
+      case 'TEXT':
+        return { text: 'Lorem Ipsum' }
+      default:
+        return {}
+    }
+  }
 
+  componentDidMount() {
+    const { dashboard, fetchContent } = this.props
+    fetchContent(dashboard)
   }
 
   componentDidUpdate(prevProps, prevState) {
     const { dashboard = {}, fetchContent, change } = this.props
     const { id = '' } = dashboard
-    const { dashboard: { id: prevId = '' } = {}, change: prevChange } = prevProps
-    console.log('id', id, 'prevId', prevId)
-    console.log('detect change', change)
-    if (id !== prevId) {
-      console.log('should fetch')
+    const { dashboard: { id: prevId } } = prevProps
+    //console.log('id', id, 'prevId', prevId)
+    //console.log('detect change', change)
+    // !isArrayEqual(content, prevContent)
+    if (id !== prevId || change) {
       fetchContent(dashboard)
     }
   }
@@ -124,25 +142,42 @@ class WidgetsView extends Component {
     this.setState({ ...this.initialState })
   }
 
+  addWidget = (type) => {
+    const { addContent, board, dashboard: { id } } = this.props
+    const itemsToAdd = {
+      dashboardId: id,
+      ...board,
+      content: [
+        ...board.content,
+        {
+          type,
+          ...this.content(type)
+        }
+      ]
+    }
+    console.log('itemsToAdd', itemsToAdd)
+    addContent(itemsToAdd)
+
+  }
+
   render() {
     const { classes } = this.props
     const { mouseX, mouseY, anchorEl } = this.state
     //console.log('x:', mouseX, 'y:', mouseY)
-    const { content } = this.props
-    const items = content.map(item => item.content[0])
-    console.log('content', content)
+    const { board } = this.props
+    const items = board.content
+    console.log('content', board)
+    console.log('items', items)
 
     return (
         <div className={classes.root}>
           <div className={classes.info}>
             <Information/>
-            <Typography variant={'h6'}>Information</Typography>
+            <Typography variant={'h5'}>Information</Typography>
           </div>
           <div className={classes.widgetGrid}>
-            {items.length > 0 && items.map((item, index) => (
-                <div key={index}>
-                  {Object.keys(item).map(info => <div key={`${info}-${index}`}>{info}: {item[info]}</div>)}
-                </div>
+            {items.map((item, index) => (
+                <Widget key={index} item={item}/>
             ))}
           </div>
           {/*        <DropdownMenu
@@ -163,7 +198,7 @@ class WidgetsView extends Component {
               transformOrigin={{ vertical: 'bottom', horizontal: 'right' }}
               anchorEl={anchorEl}
               onClose={this.handleClose}
-              options={menuOptions}
+              options={menuOptions.map(item => ({ ...item, onClick: () => this.addWidget(item.type) }))}
           />
           <Fab
               className={classes.addButton}
@@ -178,12 +213,13 @@ class WidgetsView extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  content: state.content.items,
+  board: state.content.board,
   change: state.content.change
 })
 
 const mapDispatchToProps = {
-  fetchContent
+  fetchContent,
+  addContent
 }
 
 export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(WidgetsView))

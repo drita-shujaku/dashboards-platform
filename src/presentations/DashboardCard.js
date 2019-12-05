@@ -9,24 +9,24 @@ import moment from 'moment'
 import { MoreVert } from '@material-ui/icons'
 import Card from '@material-ui/core/Card'
 
-const useStyles = makeStyles(({ spacing, size, palette, typography }) => ({
+const useStyles = makeStyles(({ spacing, size, palette, typography, shadow }) => ({
   root: {
     color: palette.primary.contrastText,
     minHeight: 270,
     width: 480,
     backgroundColor: palette.background.light,
     borderRadius: size.radius,
-    boxShadow: '0px 4px 5px rgba(0, 0, 0, 0.16)',
-    padding: `${spacing(2)}px ${spacing(3)}px`,
+    boxShadow: shadow.default,
+    padding: spacing(2, 3),
     '& > *': {
-      padding: `${spacing()}px 0px`
+      padding: spacing(1, 0)
     },
     display: 'flex',
     flexDirection: 'column'
   },
   bullet: {
     display: 'inline-block',
-    margin: `0 ${spacing()}px`,
+    margin: spacing(0, 1),
     transform: 'scale(1.5)',
   },
   moreButton: {
@@ -52,8 +52,8 @@ const useStyles = makeStyles(({ spacing, size, palette, typography }) => ({
     borderRadius: 100,
     backgroundColor: palette.secondary.light,
     color: palette.secondary.main,
-    padding: `${spacing()}px ${spacing(2)}px`,
-    margin: `0px ${spacing()}px ${spacing(1/2)}px 0px`,
+    padding: spacing(1, 2),
+    margin: spacing(0, 1, 1/2, 0),
     display: 'inline-block',
     border: `1px solid ${palette.border}`,
     maxWidth: 160,
