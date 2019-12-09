@@ -9,8 +9,9 @@ import DropdownMenu from 'presentations/DropdownMenu'
 import { Add } from '@material-ui/icons'
 import Information from 'presentations/icons/Information'
 import { connect } from 'react-redux'
-import { addContent, fetchContent } from 'reducers/content/ContentActions'
+import { updateContent, removeContent, synchronize, fetchContent } from 'reducers/content/ContentActions'
 import Widget from 'presentations/Widget'
+import { GRAPH_TYPE } from 'Constants'
 import { isArrayEqual } from 'utils/helper-functions'
 
 const styles = ({ palette, spacing, zIndex }) => ({
@@ -35,13 +36,8 @@ const styles = ({ palette, spacing, zIndex }) => ({
   widgetGrid: {
     display: 'flex',
     width: '100%',
-    flexFlow: 'row wrap',
-    '& > *': {
-      marginRight: spacing(2),
-      marginBottom: spacing(2),
-      width: 'fit-content',
-      height: 'fit-content'
-    }
+    height: '100vh',
+    position: 'relative'
   },
   addButton: {
     position: 'absolute',
@@ -64,22 +60,22 @@ const menuOptions = [
   },
   {
     text: 'Line Chart',
-    type: 'LINE',
+    type: GRAPH_TYPE.LINE,
     icon: <Line/>
   },
   {
     text: 'Bar Chart',
-    type: 'BAR',
+    type: GRAPH_TYPE.BAR,
     icon: <Bar/>
   },
   {
     text: 'Pie Chart',
-    type: 'PIE',
+    type: GRAPH_TYPE.PIE,
     icon: <Pie/>
   },
   {
     text: 'Treemap',
-    type: 'TREE',
+    type: GRAPH_TYPE.TREEMAP,
     icon: <Treemap/>
   }
 ]
@@ -92,47 +88,25 @@ class WidgetsView extends Component {
 
   state = this.initialState
 
-  content = (type) => {
-    switch (type) {
-      case 'LINE':
-      case 'BAR':
-      case 'PIE':
-      case 'TREE':
-        return {
-          data: [ { category: 'Male', value: 43 }, { category: 'Female', value: 56 }, { category: 'Other', value: 1 } ]
-        }
-      case 'IMAGE':
-        return { url: 'https://images.unsplash.com/photo-1522124624696-7ea32eb9592c' }
-      case 'TEXT':
-        return { text: 'Lorem Ipsum' }
-      default:
-        return {}
-    }
-  }
-
   componentDidMount() {
     const { dashboard, fetchContent } = this.props
     fetchContent(dashboard)
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const { dashboard = {}, fetchContent, change } = this.props
+    const { dashboard = {}, fetchContent, change, board, board: { actionId }, synchronize } = this.props
     const { id = '' } = dashboard
-    const { dashboard: { id: prevId } } = prevProps
-    //console.log('id', id, 'prevId', prevId)
-    //console.log('detect change', change)
-    // !isArrayEqual(content, prevContent)
-    if (id !== prevId || change) {
+    const { dashboard: { id: prevId }, change: prevChange, board: { actionId: prevActionId } } = prevProps
+    if (id !== prevId) {
       fetchContent(dashboard)
+    }
+
+    if (prevActionId !== actionId) {
+      synchronize(board, id)
     }
   }
 
   handleClick = (event) => {
-    // event.preventDefault()
-    /*    this.setState({
-          mouseX: event.clientX,
-          mouseY: event.clientY
-        })*/
     this.setState({
       anchorEl: event.currentTarget
     })
@@ -143,32 +117,25 @@ class WidgetsView extends Component {
   }
 
   addWidget = (type) => {
-    const { addContent, board, dashboard: { id } } = this.props
-    const itemsToAdd = {
-      dashboardId: id,
-      ...board,
-      content: [
-        ...board.content,
-        {
-          type,
-          ...this.content(type)
-        }
-      ]
-    }
-    console.log('itemsToAdd', itemsToAdd)
-    addContent(itemsToAdd)
+    // TODO: add initial layout to be at the bottom of the container
+    this.addOrUpdate({ type })
+  }
 
+  addOrUpdate = (item) => {
+    const { updateContent } = this.props
+    updateContent(item)
+  }
+
+  onDelete = (id) => {
+    const { removeContent } = this.props
+    removeContent({ id })
   }
 
   render() {
     const { classes } = this.props
-    const { mouseX, mouseY, anchorEl } = this.state
-    //console.log('x:', mouseX, 'y:', mouseY)
+    const { anchorEl } = this.state
     const { board } = this.props
     const items = board.content
-    console.log('content', board)
-    console.log('items', items)
-
     return (
         <div className={classes.root}>
           <div className={classes.info}>
@@ -176,22 +143,19 @@ class WidgetsView extends Component {
             <Typography variant={'h5'}>Information</Typography>
           </div>
           <div className={classes.widgetGrid}>
-            {items.map((item, index) => (
-                <Widget key={index} item={item}/>
-            ))}
+            {items.map((item, index) => {
+              const layout = item.layout || { x: 0, y: 0}
+              const { x = 0, y = 0 } = layout
+              return (
+                  <Widget
+                    key={item.id}
+                    x={x} y={y}
+                    onLocationChanged={(x, y) => this.addOrUpdate({ ...item, layout: { ...layout, x, y } })}
+                    item={item}
+                    onDelete={this.onDelete}/>
+              )
+            })}
           </div>
-          {/*        <DropdownMenu
-            open={mouseY !== null}
-            anchorReference={'anchorPosition'}
-            transformOrigin={{vertical: 'top', horizontal: 'left'}}
-            anchorPosition={
-              mouseY !== null && mouseX !== null
-                  ? { top: mouseY, left: mouseX }
-                  : undefined
-            }
-            onClose={this.handleClose}
-            options={menuOptions}
-        />*/}
           <DropdownMenu
               open={Boolean(anchorEl)}
               anchorOrigin={{ vertical: 'center', horizontal: 'center' }}
@@ -219,7 +183,9 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = {
   fetchContent,
-  addContent
+  updateContent,
+  removeContent,
+  synchronize
 }
 
 export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(WidgetsView))
