@@ -83,6 +83,7 @@ const theme = (type = 'light') => ({
     icon: 24,
     headerFont: 22,
     listItemFont: 18,
+    smallIcon: 16,
     defaultFont: 14,
     captionFont: 12,
     smallFont: 10,

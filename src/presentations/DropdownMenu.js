@@ -5,7 +5,7 @@
 import React from 'react'
 import { Fade, makeStyles, Menu, MenuItem } from '@material-ui/core'
 
-const useStyles = makeStyles(({ spacing, shadow }) => ({
+const useStyles = makeStyles(({ spacing, shadow, size }) => ({
   root: {},
   cardDropdown: {
     boxShadow: shadow.dropdown,
@@ -17,8 +17,8 @@ const useStyles = makeStyles(({ spacing, shadow }) => ({
     }
   },
   icon: {
-    width: 16,
-    height: 16
+    width: size.smallIcon,
+    height: size.smallIcon
   },
 }))
 

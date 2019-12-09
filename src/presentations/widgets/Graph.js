@@ -2,54 +2,77 @@
  * Created by Drita Shujaku on 04/12/2019
  */
 
-import React, { Component } from 'react'
-import { withStyles } from '@material-ui/core'
+import React, { useEffect, useRef } from 'react'
+import { makeStyles } from '@material-ui/core'
 import echarts from 'echarts'
+import { GRAPH_TYPE } from 'Constants'
+import clsx from 'clsx'
 
-const styles = ({
+const useStyles = makeStyles(({ spacing }) => ({
   root: {
-    width: 400,
-    height: 320
+    width: 420,
+    height: 320,
+    margin: spacing()
   }
-})
+}))
 
-const options = {
-  xAxis: {
-    type: 'category'
-  },
-  yAxis: {
-    type: 'value'
+
+const configureGraph = (type, data) => {
+  switch (type) {
+    case GRAPH_TYPE.LINE:
+    case GRAPH_TYPE.BAR:
+      return {
+        xAxis: {
+          type: 'category',
+          data: data.map(item => item.name),
+          axisLabel: {
+            rotate: data.length > 3 ? -45 : 0,
+          },
+          axisTick: {
+            alignWithLabel: true,
+          },
+        },
+        yAxis: {
+          type: 'value',
+        }
+      }
+    default:
+      return {}
   }
 }
 
-class Graph extends Component {
+const Graph = (props) => {
 
-  chartRef = React.createRef()
+  const { data, type, id } = props
 
-  componentDidMount() {
-    const { data, type } = this.props
-    const chart = echarts.init(this.chartRef.current)
+  const classes = useStyles(props)
+
+  const chartRef = useRef(null)
+  let chart = null
+
+  useEffect(() => {
+    chart = echarts.init(chartRef.current)
+    console.log('data', data, 'ref', chartRef)
     chart.setOption({
-      ...options,
-      xAxis: {
-        ...options.xAxis,
-        data: data.map(item => item.category)
-      },
-      series: [{
+      ...configureGraph(type, data),
+      series: [ {
+        name: 'Data',
         data,
         type: type.toLowerCase()
-      }]
+      } ]
     })
-  }
+    return () => {
+      chart.dispose()
+      chart = null
+      console.log('disposing chart', chartRef, 'type', type)
+    }
+  }, [])
 
-  render() {
-    const { classes } = this.props
-    return (
-        <div className={classes.root} ref={this.chartRef}>
 
-        </div>
-    )
-  }
+  return (
+      <div className={clsx(classes.root, id)} ref={chartRef}/>
+  )
+
 }
 
-export default withStyles(styles)(Graph)
+export default Graph

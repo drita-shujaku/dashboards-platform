@@ -2,7 +2,7 @@
  * Created by Drita Shujaku on 02/12/2019
  */
 
-import React, { useEffect } from 'react'
+import React from 'react'
 import { makeStyles, Paper } from '@material-ui/core'
 import ImageWidget from 'presentations/widgets/ImageWidget'
 import Graph from 'presentations/widgets/Graph'
@@ -70,7 +70,6 @@ const Widget = (props) => {
           <Delete className={classes.icon}/>
         </div>
         <Card {...item} {...other}/>
-        {/*{selectWidget(type)}*/}
       </Paper>
   )
 }

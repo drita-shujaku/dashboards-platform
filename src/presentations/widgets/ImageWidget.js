@@ -9,7 +9,7 @@ import PropTypes from 'prop-types'
 const useStyles = makeStyles(({size}) => ({
   root: props => ({
     width: props.width || 'auto',
-    height: props.height || 300,
+    height: props.height || 320,
     //maxWidth: 600,
     maxHeight: 400,
     borderRadius: size.radius

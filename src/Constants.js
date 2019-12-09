@@ -4,5 +4,11 @@ module.exports = {
     DASHBOARDS: 'dashboards',
     LOGIN: 'login',
     CREATE_Project: 'create'
+  },
+  GRAPH_TYPE: {
+    LINE: 'LINE',
+    BAR: 'BAR',
+    PIE: 'PIE',
+    TREEMAP: 'TREEMAP'
   }
 }
