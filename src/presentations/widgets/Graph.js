@@ -10,8 +10,8 @@ import clsx from 'clsx'
 
 const useStyles = makeStyles(({ spacing }) => ({
   root: {
-    width: 420,
-    height: 320,
+    width: props => props.width || 420,
+    height: props => props.height || 320,
     margin: spacing()
   }
 }))
@@ -52,7 +52,6 @@ const Graph = (props) => {
 
   useEffect(() => {
     chart = echarts.init(chartRef.current)
-    console.log('data', data, 'ref', chartRef)
     chart.setOption({
       ...configureGraph(type, data),
       series: [ {
@@ -64,7 +63,6 @@ const Graph = (props) => {
     return () => {
       chart.dispose()
       chart = null
-      console.log('disposing chart', chartRef, 'type', type)
     }
   }, [])
 

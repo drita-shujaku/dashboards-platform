@@ -12,12 +12,16 @@ const widgetFromType = (type) => {
     case GRAPH_TYPE.PIE:
     case GRAPH_TYPE.TREEMAP:
       return {
-        data: [ { name: 'Male', value: 43 }, { name: 'Female', value: 56 }, { name: 'Other', value: 1 } ]
+        data: [ { name: 'Male', value: 43 }, { name: 'Female', value: 56 }, { name: 'Other', value: 1 } ],
+        layout: { width: 420, height: 320 }
       }
     case 'IMAGE':
-      return { url: 'https://images.unsplash.com/photo-1522124624696-7ea32eb9592c' }
+      return {
+        url: 'https://images.unsplash.com/photo-1522124624696-7ea32eb9592c',
+        layout: { height: 320, width: 480 }
+      }
     case 'TEXT':
-      return { text: '' }
+      return { text: '', layout: { width: 360, height: 320} }
     default:
       return {}
   }

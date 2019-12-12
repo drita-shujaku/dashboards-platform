@@ -94,9 +94,9 @@ class WidgetsView extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const { dashboard = {}, fetchContent, change, board, board: { actionId }, synchronize } = this.props
+    const { dashboard = {}, fetchContent, board, board: { actionId }, synchronize } = this.props
     const { id = '' } = dashboard
-    const { dashboard: { id: prevId }, change: prevChange, board: { actionId: prevActionId } } = prevProps
+    const { dashboard: { id: prevId }, board: { actionId: prevActionId } } = prevProps
     if (id !== prevId) {
       fetchContent(dashboard)
     }
@@ -144,15 +144,17 @@ class WidgetsView extends Component {
           </div>
           <div className={classes.widgetGrid}>
             {items.map((item, index) => {
-              const layout = item.layout || { x: 0, y: 0}
-              const { x = 0, y = 0 } = layout
+              const layout = item.layout || { x: 0, y: 0 }
+              const { x = 0, y = 0, width, height } = layout
               return (
                   <Widget
-                    key={item.id}
-                    x={x} y={y}
-                    onLocationChanged={(x, y) => this.addOrUpdate({ ...item, layout: { ...layout, x, y } })}
-                    item={item}
-                    onDelete={this.onDelete}/>
+                      key={item.id}
+                      x={x} y={y} width={width} height={height}
+                      onLocationChanged={(x, y) => this.addOrUpdate({ ...item, layout: { ...layout, x, y } })}
+                      onSizeChanged={(width, height) => this.addOrUpdate({ ...item, layout: { ...layout, width, height } })}
+                      item={item}
+                      onDelete={this.onDelete}
+                  />
               )
             })}
           </div>

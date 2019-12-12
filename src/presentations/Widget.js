@@ -10,6 +10,7 @@ import Note from 'presentations/widgets/Note'
 import { Delete } from 'presentations/icons'
 import { GRAPH_TYPE } from 'Constants'
 import draggable from 'presentations/Draggable'
+import resizable from 'presentations/Resizable'
 
 const useStyles = makeStyles(({ palette, size, spacing, shadow, zIndex }) => ({
   root: {
@@ -19,6 +20,16 @@ const useStyles = makeStyles(({ palette, size, spacing, shadow, zIndex }) => ({
     '& > *': {
       borderRadius: size.radius,
     }
+  },
+  resize: {
+    position: 'absolute',
+    right: -4,
+    bottom: -4,
+    '&:hover': {
+      cursor: 'nwse-resize'
+    },
+    width: spacing(2),
+    height: spacing(2)
   },
   actions: {
     color: 'transparent',
@@ -41,8 +52,17 @@ const useStyles = makeStyles(({ palette, size, spacing, shadow, zIndex }) => ({
 
 const Widget = (props) => {
 
-  const { item, onDelete, x, y, onMouseDown, onMouseMove, onMouseUp, ...other } = props
-  const { type, id } = item
+  const {
+    item,
+    onDelete,
+    x, y,
+    onMouseDown, onMouseMove, onMouseUp,
+    onLocationChanged,
+    onSizeChanged,
+    resizeListeners,
+    ...other
+  } = props
+  const { actionId, ...itemProps } = item
   //console.log('item received', item)
 
   const classes = useStyles()
@@ -62,16 +82,41 @@ const Widget = (props) => {
         return Note
     }
   }
+  /*
+   const selectWidget = (type) => {
+      switch (type) {
+        case 'IMAGE':
+          return <ImageWidget height={320} {...itemProps} {...other} height={undefined}/>
+        case GRAPH_TYPE.LINE:
+        case GRAPH_TYPE.BAR:
+        case GRAPH_TYPE.PIE:
+        case GRAPH_TYPE.TREEMAP:
+          return <Graph width={420} height={320} {...itemProps} {...other}/>
+        case 'TEXT':
+        default:
+          return <Note width={360} height={320} {...itemProps} {...other}/>
+      }
+    }
+  */
 
-  const Card = selectWidget(type)
+  const Card = selectWidget(item.type)
+
   return (
-      <Paper onMouseDown={onMouseDown} onMouseMove={onMouseMove} onMouseUp={onMouseUp} className={classes.root} style={{ top: y, left: x }}>
-        <div className={classes.actions} onClick={() => onDelete(id)}>
+      <Paper
+          onMouseDown={onMouseDown}
+          onMouseMove={onMouseMove}
+          onMouseUp={onMouseUp}
+          className={classes.root}
+          style={{ top: y, left: x }}
+      >
+        <div className={classes.actions} onClick={() => onDelete(item.id)}>
           <Delete className={classes.icon}/>
         </div>
-        <Card {...item} {...other}/>
+        <Card {...itemProps} {...other}/>
+        {/*{selectWidget(item.type)}*/}
+        <div className={classes.resize} {...resizeListeners}/>
       </Paper>
   )
 }
 
-export default draggable(Widget)
+export default draggable(resizable(Widget))
