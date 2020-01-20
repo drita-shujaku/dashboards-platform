@@ -1,102 +1,132 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import { connect } from 'react-redux'
+import { useHistory, useLocation } from 'react-router-dom'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
 import { makeStyles } from '@material-ui/core'
-import Logo from 'presentations/icons/Logo'
-import LogoTextIcon from 'presentations/icons/LogoTextIcon'
+import { Logo, LogoTextIcon } from 'presentations/icons'
+import { logIn } from 'reducers/users/UsersActions'
+import Form, { FormActions, FormBody } from 'presentations/Form'
 
-const useStyles = makeStyles(({palette}) => ({
+const useStyles = makeStyles(({ palette, spacing, size, shadows }) => ({
   root: {
     width: '100%',
     display: 'flex',
     alignItems: 'center',
-    flexFlow: 'row wrap',
-    backgroundColor: palette.background.dark,
-    opacity: 0.8,
-    height: '100vh',
-    overflow: 'hidden',
-    //color: palette.text.default,
+    //flexFlow: 'row wrap',
+    backgroundColor: palette.background.default,
+    //opacity: 0.8,
+    height: '100%',
+    //overflow: 'hidden',
+    color: palette.text.default,
   },
-  form: {
-    backgroundColor: palette.background.paper,
-    display: 'flex',
-    flexDirection: 'column',
-    margin: 'auto',
-    /*
-    position: 'absolute',
-    left: '50%',
-    top: '50%',
-    transform: 'translate(-50%, -50%)',*/
-    //maxWidth: 400,
-    padding: 32,
-    borderRadius: 10,
-    '& > *:not(:first-child):not(:last-child)': {
-      marginBottom: 16,
-      minWidth: 350,
-    }
-  },
-  logo: {
+  header: {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    marginBottom: 24
+    marginBottom: spacing(3)
   },
   icon: {
-    width: 42,
-    height: 42
+    width: spacing(6),
+    height: spacing(6)
   },
   logoText: {
     width: 70,
-    height: 32
-  },
-  actions: {
-    display: 'flex',
-    width: '100%',
-    justifyContent: 'center'
+    height: spacing(4),
+    color: palette.text.primary
   },
   button: {
-    width: '30%',
     textTransform: 'uppercase'
   }
 }))
 
 const Login = (props) => {
-  //const {classes} = props
+  const { logIn, user: { token }, authenticated } = props
   const classes = useStyles()
+  const location = useLocation()
+  const history = useHistory()
+  const { from } = location.state || { from: { pathname: "/" } }
+
+  const [ user, setUser ] = useState({ username: '', password: '', message: '' })
+
+  const message = {
+    empty: 'Please fill in your credentials!'
+  }
+
+  useEffect(() => {
+    if (token) {
+      history.replace(from)
+    }
+  }, [ token ])
+
+
+  const displayError = (message) => {
+    setUser({ ...user, message })
+  }
+
+  const handleChange = (event) => {
+    const { name, value } = event.target
+    setUser({ ...user, [name]: value, ...(user.message && { message: '' }) })
+  }
+
+  const validateUser = (event) => {
+    event.preventDefault()
+    if (!user.username || !user.password) {
+      displayError(message.empty)
+    } else {
+      logIn(user).then(null, error => {
+        displayError(error.message)
+      })
+    }
+  }
+
   return (
       <div className={classes.root}>
-        <div className={classes.form}>
-          <div className={classes.logo}>
+        <Form onSubmit={validateUser}>
+          <div className={classes.header}>
             <Logo className={classes.icon}/>
             <LogoTextIcon className={classes.logoText}/>
           </div>
-          <TextField
-              name={'username'}
-              label={'Username'}
-              variant={'filled'}
-              autoFocus={true}
-              //InputProps={{disableUnderline:true}}
-              fullWidth
-          />
-          <TextField
-              name={'password'}
-              label={'Password'}
-              variant={'filled'}
-              type={'password'}
-          />
-          <div className={classes.actions}>
+          <FormBody message={user.message}>
+            <TextField
+                name={'username'}
+                label={'Username'}
+                variant={'filled'}
+                value={user.username}
+                autoFocus={true}
+                onChange={handleChange}
+            />
+            <TextField
+                name={'password'}
+                label={'Password'}
+                variant={'filled'}
+                type={'password'}
+                value={user.password}
+                onChange={handleChange}
+            />
+          </FormBody>
+          <FormActions className={classes.actions}>
             <Button
                 className={classes.button}
-                color={'secondary'}
-                /*variant={'contained'}*/
                 size={'large'}
+                type={'submit'}
             >
               Log in
             </Button>
-          </div>
-        </div>
+          </FormActions>
+        </Form>
       </div>
   )
 }
 
-export default Login
+const mapStateToProps = (state) => ({
+  user: state.session.user,
+  authenticated: state.session.authenticated,
+  invalid: state.session.invalid
+})
+
+const mapDispatchToProps = ({
+  logIn
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(Login)
