@@ -19,12 +19,15 @@ const useStyles = makeStyles(({ palette, size, spacing, shadow, zIndex }) => ({
     position: 'absolute',
     '& > *': {
       borderRadius: size.radius,
+    },
+    '&:hover $actions': {
+      display: 'flex'
     }
   },
   resize: {
     position: 'absolute',
-    right: -4,
-    bottom: -4,
+    right: -spacing(0.5),
+    bottom: -spacing(0.5),
     '&:hover': {
       cursor: 'nwse-resize'
     },
@@ -32,17 +35,13 @@ const useStyles = makeStyles(({ palette, size, spacing, shadow, zIndex }) => ({
     height: spacing(2)
   },
   actions: {
-    color: 'transparent',
+    display: 'none',
+    color: palette.secondary.main,
     position: 'absolute',
     padding: spacing(2),
     cursor: 'pointer',
-    '&:hover': {
-      display: 'flex',
-      color: palette.secondary.main
-    },
     right: 0,
-    top: 0,
-    zIndex: 1000
+    top: 0
   },
   icon: {
     width: size.smallIcon,
@@ -56,10 +55,11 @@ const Widget = (props) => {
     item,
     onDelete,
     x, y,
-    onMouseDown, onMouseMove, onMouseUp,
+    draggableListeners,
     onLocationChanged,
     onSizeChanged,
     resizeListeners,
+    resizing,
     ...other
   } = props
   const { actionId, ...itemProps } = item
@@ -103,9 +103,7 @@ const Widget = (props) => {
 
   return (
       <Paper
-          onMouseDown={onMouseDown}
-          onMouseMove={onMouseMove}
-          onMouseUp={onMouseUp}
+          {...draggableListeners}
           className={classes.root}
           style={{ top: y, left: x }}
       >
@@ -119,4 +117,4 @@ const Widget = (props) => {
   )
 }
 
-export default draggable(resizable(Widget))
+export default resizable(draggable(Widget))

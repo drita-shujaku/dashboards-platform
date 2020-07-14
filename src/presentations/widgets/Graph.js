@@ -12,7 +12,8 @@ const useStyles = makeStyles(({ spacing }) => ({
   root: {
     width: props => props.width || 420,
     height: props => props.height || 320,
-    margin: spacing()
+    margin: spacing(),
+    paddingTop: spacing(2)
   }
 }))
 

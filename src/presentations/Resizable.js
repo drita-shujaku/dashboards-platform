@@ -7,7 +7,8 @@ const Resizable = (Component) => {
       const { width, height } = props
       this.state = {
         width: width,
-        height: height
+        height: height,
+        resizing: false
       }
     }
 
@@ -27,32 +28,38 @@ const Resizable = (Component) => {
       let pageY = event.pageY
       const { width, height } = this.state
       this.setState({
-        tempSize: {
-          width: pageX - width,
-          height: pageY - height
-        }
+        location: {
+          x: pageX - width,
+          y: pageY - height
+        },
+        resizing: true
       })
     }
 
     onMouseMove = (event) => {
-      const { tempSize } = this.state
-      if (!tempSize) {
+      const { location } = this.state
+      if (!location) {
         return
       }
       event.preventDefault()
 
       const { pageX, pageY } = event
       this.setState({
-        width: pageX - tempSize.width,
-        height: pageY - tempSize.height
+        width: pageX - location.x,
+        height: pageY - location.y
       })
     }
 
     onMouseUp = (event) => {
       event.preventDefault()
-      this.setState(prevState => ({
-        tempSize: undefined
-      }))
+      const { location } = this.state
+      if (!location) {
+        return
+      }
+      this.setState({
+        location: undefined,
+        resizing: false
+      })
 
       const { onSizeChanged } = this.props
       if (!!onSizeChanged) {
@@ -62,14 +69,14 @@ const Resizable = (Component) => {
     }
 
     render() {
-      const { width, height } = this.state
+      const { width, height, resizing } = this.state
       console.log('new width', width, 'new height', height)
       const resizeListeners = {
         onMouseDown: this.onMouseDown,
         onMouseMove: this.onMouseMove,
         onMouseUp: this.onMouseUp
       }
-      return <Component resizeListeners={resizeListeners} {...this.props}  width={width} height={height} />
+      return <Component resizeListeners={resizeListeners} {...this.props} width={width} height={height} resizing={resizing}/>
     }
   }
 }
