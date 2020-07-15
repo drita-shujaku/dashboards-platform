@@ -1,5 +1,6 @@
 const path = require('path')
 const DIST_DIR = path.resolve(__dirname, 'dist')
+const BUILD_DIR = path.resolve(DIST_DIR, 'build')
 const APP_DIR = path.resolve(__dirname, 'src')
 const BUILD_ENV = process.env.NODE_ENV || 'development'
 
@@ -9,7 +10,7 @@ module.exports = {
   entry: './index.js',
   output: {
     filename: 'bundle.js',
-    path: DIST_DIR,
+    path: BUILD_DIR,
     publicPath: '/'
   },
   devServer: {
